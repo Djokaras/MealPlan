@@ -1,131 +1,159 @@
 * {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
+	box-sizing: border-box;
+	margin: 0;
+	padding: 0;
 }
 
 body {
-    font-family: Arial, sans-serif;
-    padding: 20px;
-    background-color: #f9f9f9;
-    color: #a102a1;
+	font-family: Arial, sans-serif;
+	padding: 20px;
+	background-color: #f9f9f9;
+	color: #a102a1;
 }
 
 .meal-planner-container {
-    width: 100%;
-    max-width: 1200px;
-    margin: 0 auto;
+	width: 100%;
+	max-width: 1200px;
+	margin: 0 auto;
 }
 
 table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-bottom: 20px;
+	width: 100%;
+	border-collapse: collapse;
+	margin-bottom: 20px;
 }
 
 thead th {
-    background-color: #f3f3f3;
-    text-align: center;
-    padding: 10px;
-    font-weight: bold;
-    border: 1px solid #979797;
+	background-color: #f3f3f3;
+	text-align: center;
+	padding: 10px;
+	font-weight: bold;
+	border: 1px solid #979797;
 }
 
 tbody td {
-    text-align: center;
-    padding: 10px;
-    border: 1px solid #979797;
+	text-align: center;
+	padding: 10px;
+	border: 1px solid #979797;
 }
 
 /* Alternate row colors (Lighter and Darker shades) */
 tbody tr:nth-child(even) {
-    background-color: #adadad; /* Lighter shade */
-} 
+	background-color: #adadad; /* Lighter shade */
+}
 
 tbody tr:nth-child(odd) {
-    background-color: #dfdbde; /* Darker shade */
+	background-color: #dfdbde; /* Darker shade */
 }
 
 /* Adjusting table cell widths */
 td {
-    font-size: 14px;
-    vertical-align: middle;
+	font-size: 14px;
+	vertical-align: middle;
 }
 
-table th, table td {
-    width: 12%;
+table th,
+table td {
+	width: 12%;
 }
 
-table th:first-child, table td:first-child {
-    width: 10%;
+table th:first-child,
+table td:first-child {
+	width: 10%;
 }
 
-.meal {
-    cursor: pointer; /* Changes cursor to pointer on hover */
+.meal-title {
+	cursor: pointer; /* Changes cursor to pointer on hover */
 }
 
-/* Responsive Styles */
-@media (max-width: 768px) {
-    table, thead, tbody, th, td, tr {
-        display: block;
-        width: 100%;
-    }
 
-    thead {
-        display: none; /* Hides the header on small screens */
-    }
-
-    tr {
-        margin-bottom: 15px; /* Adds space between rows */
-    }
-
-    td {
-        text-align: left; /* Aligns text to the left */
-        padding: 10px;
-        position: relative; /* Required for pseudo-elements */
-        padding-left: 50%; /* Adds padding for labels */
-    }
-
-    td::before {
-        content: attr(data-label); /* Uses data-label for each cell */
-        position: absolute;
-        left: 10px;
-        width: 40%;
-        padding-right: 10px;
-        white-space: nowrap; /* Prevents text from wrapping */
-        font-weight: bold;
-    }
-}
 
 .modal {
-    display: none; /* Hidden by default */
-    position: fixed; /* Stay in place */
-    z-index: 1000; /* Sit on top */
-    left: 0;
-    top: 0;
-    width: 100%; /* Full width */
-    height: 100%; /* Full height */
-    background-color: rgba(0, 0, 0, 0.5); /* Black background with opacity */
+	display: none; /* Hidden by default */
+	position: fixed; /* Stay in place */
+	z-index: 1000; /* Sit on top */
+	left: 0;
+	top: 0;
+	width: 100%; /* Full width */
+	height: 100%; /* Full height */
+	background-color: rgba(0, 0, 0, 0.5); /* Black background with opacity */
 }
 
 .modal-content {
-    background-color: #fff;
-    margin: 15% auto; /* 15% from the top and centered */
-    padding: 20px;
-    border: 1px solid #888;
-    width: 80%; /* Could be more or less, depending on screen size */
+	background-color: #fff;
+	margin: 15% auto; /* 15% from the top and centered */
+	padding: 20px;
+	border: 1px solid #888;
+	width: 80%; /* Could be more or less, depending on screen size */
+}
+
+.modal-content h2 {
+	margin-bottom: 20px; /* Adds padding under the h2 element */
 }
 
 .close {
-    color: #aaa;
-    float: right;
-    font-size: 28px;
-    font-weight: bold;
+	color: #aaa;
+	float: right;
+	font-size: 28px;
+	font-weight: bold;
 }
 
 .close:hover,
 .close:focus {
-    color: black;
-    text-decoration: none;
-    cursor: pointer;
+	color: black;
+	text-decoration: none;
+	cursor: pointer;
+}
+
+/* Responsive Styles */
+@media (max-width: 768px) {
+	table {
+		width: 100%;
+		border-collapse: collapse;
+	}
+
+    table td:first-child{
+        width: 100%;
+        font-weight: bold;
+        font-size: large;
+        background-color: #a102a1;
+        color: #fff;
+    }
+
+    table td {
+        width: 100%;
+    }
+
+	thead {
+		display: none; /* Hides the header on small screens */
+	}
+
+	tr {
+		margin-bottom: 15px; /* Adds space between rows */
+		border-bottom: 1px solid #ddd;
+	}
+
+	td {
+		display: block;
+		padding: 10px;
+		position: relative; /* Required for pseudo-elements */
+        width: 100%;
+	}
+
+	/* td::before {
+		content: attr(data-label); /* Uses data-label for each cell */
+		position: absolute;
+		left: 10px;
+		top: 0;
+		width: 40%;
+		padding-right: 10px;
+		white-space: nowrap; /* Prevents text from wrapping */
+		font-weight: bold;
+		background-color: #f5f5f5;
+		padding: 5px;
+	} */
+
+	.meal-title {
+		font-size: 16px;
+	}
 }

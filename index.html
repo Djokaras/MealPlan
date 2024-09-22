@@ -1,109 +1,161 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Meal Planner</title>
-    <link rel="stylesheet" href="styles.css">
-    
-</head>
-<body>
-    <div class="meal-planner-container">
-        <table>
-            <thead>
-                <tr>
-                    <th>1. i 3. Nedelja</th>
-                    <th>Doručak</th>
-                    <th>Užina</th>
-                    <th>Ručak</th>
-                    <th>Užina 2</th>
-                    <th>Večera</th>
-                    <th>Kcal</th>
-                    <th>% Macrosa</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td>1. Dan</td>
-                    <td class="meal" data-recipe="Usitniti 30 gr keksa bez dodatog šećera, pa ga izmešati sa 30 ml bademovog mleka bez dodatog šećera i utisnuti na dno posude. Preko
-                    dodati 180-200 gr protein pudinga od čokolade i 15 gr iseckanih lešnika.">Ferrero kolac</td>
-                    <td>150 gr jagoda + 100 gr banane</td>
-                    <td>Salata sa jajima</td>
-                    <td>300 gr jagoda + 15 gr whey proteina + voda (izblendirati)</td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                </tr>
-                <tr>
-                    <td >2. Dan</td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                </tr>
-                <tr>
-                    <td >3. Dan</td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                </tr>
-                <tr>
-                    <td >4. Dan</td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                </tr>
-                <tr>
-                    <td >5. Dan</td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                </tr>
-                <tr>
-                    <td >6. Dan</td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                </tr>
-                <tr>
-                    <td >7. Dan</td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                </tr>
-            </tbody>
-        </table>
-    </div>
-    <div id="recipeModal" class="modal">
-        <div class="modal-content">
-            <span class="close">&times;</span>
-            <h2 id='mealName'>Recept</h2>
-            <p id="recipeText"></p>
-        </div>
-    </div>
-    <script src="script.js"></script>
-</body>
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Meal Planner</title>
+		<link rel="stylesheet" href="styles.css" />
+	</head>
+	<body>
+		<div class="meal-planner-container">
+			<table>
+				<thead>
+					<tr>
+						<th>1. i 3. Nedelja</th>
+						<th>Doručak</th>
+						<th>Užina</th>
+						<th>Ručak</th>
+						<th>Užina 2</th>
+						<th>Večera</th>
+						<th>Kcal</th>
+						<th>% Macrosa</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+						<td>1. Dan</td>
+						<td class="meal"><span class="meal-title">Ferrero kolač</span></td>
+						<td class="meal">150 gr jagoda + 100 gr banane</td>
+						<td class="meal">
+							<span class="meal-title">Salata sa jajima</span>
+						</td>
+						<td class="meal">
+							300 gr jagoda + 15 gr whey proteina + voda (izblendirati)
+						</td>
+						<td class="meal">
+							60 gr kuskusa + salata + 150 gr gotovih leblebija iz konzerve + 80
+							gr pecenog pileceg belog mesa
+						</td>
+						<td>1731</td>
+						<td></td>
+					</tr>
+					<tr>
+						<td>2. Dan</td>
+						<td class="meal">
+							<span class="meal-title">Projice sa spanaćem</span
+							><span class="note"
+								>(1/2 pripremljene porcije) + 180 gr Balans jogurta</span
+							>
+						</td>
+						<td class="meal">20 gr lešnika + 150 gr jabuke</td>
+						<td class="meal">
+							<span class="meal-title">Hladna tuna pasta</span>
+						</td>
+						<td class="meal">
+							<span class="meal-title">Shake sa jagodom</span>
+						</td>
+						<td class="meal">
+							<span class="meal-title">Projice sa spanaćem</span
+							><span class="note"
+								>(1/2 pripremljene porcije) + 180 gr Balans jogurta</span
+							>
+						</td>
+
+						<td>1721</td>
+						<td></td>
+					</tr>
+					<tr>
+						<td>3. Dan</td>
+						<td class="meal">
+							<span class="meal-title">Posne keks kuglice</span>
+						</td>
+						<td class="meal">35 gr lešnika + 200 gr jagoda</td>
+						<td class="meal">
+							200 gr oslića + 50 gr kuskusa + salata + 100 gr graška
+						</td>
+						<td class="meal">20 gr lešnika</td>
+						<td class="meal">
+							150 gr oslića + 40 gr kuskusa + salata + 50 gr graška
+						</td>
+						<td>1727</td>
+						<td></td>
+					</tr>
+					<tr>
+						<td>4. Dan</td>
+						<td class="meal">
+							<span class="meal-title">Uštipci sa tikvicama</span>
+							<span class="note">(1/2 pripremljene porcije) + salata</span>
+						</td>
+						<td class="meal">
+							100 gr banane + 200 gr jagoda + 10 gr kikiriki putera
+						</td>
+						<td class="meal"><span class="meal-title">Sataraš</span></td>
+						<td class="meal">
+							<span class="meal-title">Shake sa jagodom</span>
+						</td>
+						<td class="meal">
+							<span class="meal-title">Uštipci sa tikvicama</span>
+							<span class="note"> (1/2 pripremljene porcije) + salata</span>
+						</td>
+						<td>1745</td>
+						<td></td>
+					</tr>
+					<tr>
+						<td>5. Dan</td>
+						<td class="meal"><span class="meal-title">Voćna salata</span></td>
+						<td class="meal">20 gr veganskog proteina + voda (izblendati)</td>
+						<td class="meal">
+							<span class="meal-title">Tuna salata </span>
+							<span class="note"
+								>(1/2 pripremljene porcije) + 40 gr integralnog hleba</span
+							>
+						</td>
+						<td class="meal">200 gr jagoda + 25 gr kikirikija</td>
+						<td class="meal">
+							<span class="meal-title">Tuna salata </span>
+							<span class="note">(1/2 pripremljene porcije)</span>
+						</td>
+						<td>1712</td>
+						<td></td>
+					</tr>
+
+					<tr>
+						<td>6. Dan</td>
+						<td class="meal"><span class="meal-title">Kapri kolač</span></td>
+						<td class="meal"><span class="meal-title">300 gr jagoda
+
+                            + 100 gr banane</span></td>
+						<td class="meal"><span class="meal-title">Fit pizza 1</span></td>
+						<td class="meal"><span class="meal-title">Twix shake</span></td>
+						<td class="meal"><span class="meal-title">Sendvič sa goveđom pršutom</span> <span class="note">+ 300 gr Balans jogurta</span></span></td>
+						<td>1730</td>
+						<td></td>
+					</tr>
+					<tr>
+						<td>7. Dan</td>
+						<td class="meal"><span class="meal-title">Slana tortilla</span> <span class="note"> + 200 gr Balans jogurta</span></td>
+						<td class="meal">300 gr jagoda</td>
+						<td class="meal"><span class="meal-title">Kremasta pasta sa pistaćima</span></td>
+						<td class="meal"><span class="meal-title"></span>x</td>
+						<td class="meal">150 gr pečenog
+                            pilećeg belog mesa
+                            + salata
+                            + 200 gr kukuruza
+                            + 50 gr kuskusa</td>
+						<td>1722</td>
+						<td></td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+		<div id="recipeModal" class="modal">
+			<div class="modal-content">
+				<span class="close">&times;</span>
+				<h2 id="mealName">Recept</h2>
+				<p id="recipeText"></p>
+			</div>
+		</div>
+		<script src="recepies.js"></script>
+		<script src="script.js"></script>
+	</body>
 </html>
