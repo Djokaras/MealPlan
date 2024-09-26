@@ -128,7 +128,7 @@ table td:first-child {
 	height: 100%; /* Full height */
 	background-color: rgba(0, 0, 0, 0.5); /* Black background with opacity */
 	overflow: hidden; /* Disable overflow on the modal container */
-	display: flex;
+	display: none;
 	justify-content: center;
 	align-items: center;
 
@@ -217,9 +217,7 @@ table td:first-child {
 		margin-bottom: 10px;
 		display: flex;
 		justify-content: space-between; /* Space between the buttons */
-		gap: 10px; /* Add space between buttons (optional) */
 		flex-direction: row; /* Ensure buttons are in a row on smaller screens */
-
 	}
 
 	.toggle-buttons button{ 
@@ -241,9 +239,7 @@ table td:first-child {
 		cursor: pointer;
 		transition: transform 0.1s ease-in-out, box-shadow 0.1s ease-in-out;
 		box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Slight shadow for a 3D look */
-		margin: 0 10px;
-		width: 10rem; /* Use a percentage-based width */
-	
+		margin: 0 10px;	
 	}
 
     table td:first-child{

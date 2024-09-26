@@ -46,7 +46,7 @@ document.addEventListener('DOMContentLoaded', () => {
 			recipeText.textContent = recipes[clickedMeal] || 'Recipe not found'; // Get recipe from the object
 			const alternativeMeals = getAlternative(clickedMeal);
 			console.log('Alternative recipes:', alternativeMeals);
-			modal.style.display = 'block';
+			modal.style.display = 'flex';
 		});
 	});
 
