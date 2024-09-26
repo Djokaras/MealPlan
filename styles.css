@@ -127,6 +127,14 @@ table td:first-child {
 	width: 100%; /* Full width */
 	height: 100%; /* Full height */
 	background-color: rgba(0, 0, 0, 0.5); /* Black background with opacity */
+	overflow: hidden; /* Disable overflow on the modal container */
+	display: flex;
+	justify-content: center;
+	align-items: center;
+
+
+
+
 }
 
 .modal-content {
@@ -134,7 +142,12 @@ table td:first-child {
 	margin: 15% auto; /* 15% from the top and centered */
 	padding: 20px;
 	border: 1px solid #888;
+	border-radius: 10px;
 	width: 80%; /* Could be more or less, depending on screen size */
+	max-height: 80%; /* Ensure modal content doesn't overflow out of the screen */
+	overflow-y: auto; /* Allow scrolling inside the modal */
+
+
 }
 
 .modal-content h2 {
