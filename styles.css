@@ -215,10 +215,16 @@ table td:first-child {
 		text-align: center;
 		margin-top: 20px;
 		margin-bottom: 10px;
+		display: flex;
+		justify-content: space-between; /* Space between the buttons */
+		gap: 10px; /* Add space between buttons (optional) */
+		flex-direction: row; /* Ensure buttons are in a row on smaller screens */
+
 	}
 
 	.toggle-buttons button{ 
-		size: 50%;
+		flex: 1; /* Ensure buttons are evenly spaced */
+		min-width: 0; /* Prevent buttons from overflowing */		
 	}
 
 	#recipeText {
