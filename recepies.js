@@ -81,8 +81,6 @@ const recipes = {
 		'Izrendati jednu srednju tikvicu, malo je posoliti i ostaviti da pusti vodu. Nakon toga je dobro ocediti, pa dodati iseckanu 1  vezicu mladog luka, 2 jajeta, 150 gr izmrvljenog feta sira, ½ kesice praška za pecivo, 100 ml Balans jogurta (ili bilo kojeg drugog sa 1% mm), 60 gr speltinog  brašna (ili bilo kojeg drugog integralnog brašna). Izmešati sastojke, pa izliti na pleh ili kalup obložen pek papirom. Posuti sa 10 gr susama, pa peći na 180  stepeni, dok pita ne dobije rumenu boju. Pola pripremljenog obroka konzumirati za večeru, a drugu polovinu ostaviti za naredni dan za doručak.',
 	'Fit pizza 2':
 		'Pomešati 70 gr Skyr-a (ili Olympus 2% mm grčkog jogurta- treba da ima do 75 kcal/100 gr na deklaraciji), sa 60 gr sitnih ovsenih pahuljica, pola kesice praška za pecivo i malo soli. Umesiti testo, pa preneti na pek papir i rastanjiti ga pomoću drugog pek papira od gore. Na testo dodati 40-50 gr  pasiranog parajdaza, 50 gr iseckanih pilećih ili ćurećih prsa iz omota (ili 25 gr iseckane goveđe pršute), 50 gr šampinjona, origano i 35 gr mozzarele. Peći na  180 stepeni oko 20 minuta.',
-	'Sendvič sa goveđom pršutom':
-		'Recept je isti kao Sendvič sa goveđom pršutom u 1. i 3. nedelji.',
 	'Špagete bolognese':
 		'Izdinstati 1 glavicu crnog luka na vodi. Kada luk omekša,dodati 110 gr junećeg nemasnog mlevenog mesa (Umesto njega može 130 gr pilećegmlevenog belog mesa). Dinstati meso dok ne omekša. Dodati 150 ml soka od paradajza. Začiniti. Dinstati dok ne ispari sva voda. Za to vreme skuvati 50 gr integralne testenine u vodi, pa preliti pripremljenim sosom.',
 	'Omlet sa tortillom':
@@ -97,13 +95,13 @@ const alternatives = {
 		'Pita sa jabukom',
 		'Švarcvald sladoled',
 	],
-	'Salata sa jajima': ['Fit pizza 1', 'Fitt pizza 2'],
+	'Salata sa jajima': ['Fit pizza 1', 'Fit pizza 2'],
 	'Projice sa spanaćem': ['Uštipci sa tikvicama'],
 	'Hladna tuna pasta': [
 		'Tuna salata',
 		'Tortilla burger',
 		'Đuveč',
-		'Špagete bolognese:',
+		'Špagete bolognese',
 	],
 	'Shake sa jagodom': ['Twix shake', 'Proteinski sladoled'],
 	'Posne keks kuglice': [
@@ -114,7 +112,7 @@ const alternatives = {
 		'Omlet sa tortillom',
 	],
 	Sataraš: ['Kremasta pasta sa pistaćima'],
-	'Sendvič sa goveđom pršutom:': [
+	'Sendvič sa goveđom pršutom': [
 		'Proteinski sladoled',
 		'Shake sa jagodom',
 		'Twix shake',

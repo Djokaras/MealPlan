@@ -5,7 +5,8 @@
 }
 
 body {
-	font-family: Arial, sans-serif;
+	font-family: "Poppins", sans-serif;
+	font-size: 1.4rem;
 	padding: 20px;
 	background-color: #f9f9f9;
 	color: #a102a1;
@@ -15,6 +16,10 @@ body {
 	width: 100%;
 	max-width: 1200px;
 	margin: 0 auto;
+}
+
+h2, h3, h4{
+	font-family: "Poppins", sans-serif;
 }
 
 table {
@@ -66,8 +71,53 @@ table td:first-child {
 	cursor: pointer; /* Changes cursor to pointer on hover */
 }
 
+.meal-plan {
+    display: none; /* Hide all meal plans by default */
+}
+
+.meal-plan.active {
+    display: block; /* Show only the active meal plan */
+}
 
 
+/* Style for table buttons (previous and next) */
+
+.toggle-buttons {
+    text-align: left;
+    margin-top: 20px;
+	margin-bottom: 20px;
+}
+
+.toggle-buttons button:first-child {
+	margin-left: 0;
+	margin-right: 0;
+}
+
+.toggle-buttons button {
+    background-color: #a102a1; /* Solid color */
+    color: white; /* White text */
+    border: none;
+    border-radius: 8px; /* Slight curve */
+    padding: 10px 20px;
+    font-size: 18px;
+    cursor: pointer;
+    transition: transform 0.1s ease-in-out, box-shadow 0.1s ease-in-out;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Slight shadow for a 3D look */
+    margin: 0 10px;
+	width: 10rem; /* Use a percentage-based width */
+
+}
+
+.toggle-buttons button:hover {
+    box-shadow: 0 6px 10px rgba(0, 0, 0, 0.15); /* Slightly deeper shadow on hover */
+}
+
+.toggle-buttons button:active {
+    transform: scale(0.95); /* Shrinking effect on press */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Shadow becomes smaller when pressed */
+}
+
+/* Modal of recipies style */
 .modal {
 	display: none; /* Hidden by default */
 	position: fixed; /* Stay in place */
@@ -89,6 +139,7 @@ table td:first-child {
 
 .modal-content h2 {
 	margin-bottom: 20px; /* Adds padding under the h2 element */
+	text-align: left;
 }
 
 .close {
@@ -96,6 +147,7 @@ table td:first-child {
 	float: right;
 	font-size: 28px;
 	font-weight: bold;
+	margin-left: 10px;
 }
 
 .close:hover,
@@ -105,11 +157,51 @@ table td:first-child {
 	cursor: pointer;
 }
 
+.toggle-alternative-buttons {
+    text-align: left;
+    margin-top: 20px;
+	margin-bottom: 20px;
+}
+
+.toggle-alternative-buttons button:first-child {
+	margin-left: 0;
+	margin-right: 0;
+}
+
+.toggle-alternative-buttons button {
+    background-color: #a102a1; /* Solid color */
+    color: white; /* White text */
+    border: none;
+    border-radius: 8px; /* Slight curve */
+    padding: 10px 20px;
+    font-size: 12px;
+    cursor: pointer;
+    transition: transform 0.1s ease-in-out, box-shadow 0.1s ease-in-out;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Slight shadow for a 3D look */
+    margin: 0 10px;
+
+}
+
+.toggle-alternative-buttons button:hover {
+    box-shadow: 0 6px 10px rgba(0, 0, 0, 0.15); /* Slightly deeper shadow on hover */
+}
+
+.toggle-alternative-buttons button:active {
+    transform: scale(0.95); /* Shrinking effect on press */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Shadow becomes smaller when pressed */
+}
+
 /* Responsive Styles */
 @media (max-width: 768px) {
 	table {
 		width: 100%;
 		border-collapse: collapse;
+	}
+
+	.toggle-buttons {
+		text-align: center;
+		margin-top: 20px;
+		margin-bottom: 10px;
 	}
 
     table td:first-child{
@@ -125,8 +217,27 @@ table td:first-child {
     }
 
 	thead {
-		display: none; /* Hides the header on small screens */
+		width: 100%;
+		display: table; /* Ensure it behaves like a table element */
+		table-layout: fixed; /* Enforce the width constraints */
 	}
+
+	thead th{
+		display: none;  /*Hides the header on small screens */
+	}
+
+	/* Display only the first <th> */
+    table thead th:first-child {
+        display: table-cell;
+		size: 50%;
+    }
+    
+    /* Display only the last <th> */
+    table thead th:last-child {
+        display: table-cell;
+		size: 50%;
+
+    }
 
 	tr {
 		margin-bottom: 15px; /* Adds space between rows */

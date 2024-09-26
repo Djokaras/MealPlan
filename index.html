@@ -1,13 +1,33 @@
 <!DOCTYPE html>
 <html lang="en">
-	<head>
-		<meta charset="UTF-8" />
-		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-		<title>Meal Planner</title>
-		<link rel="stylesheet" href="styles.css" />
-	</head>
-	<body>
-		<div class="meal-planner-container">
+
+<head>
+	<meta charset="UTF-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<title>Meal Planner</title>
+	<link rel="stylesheet" href="styles.css" />
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link
+		href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap"
+		rel="stylesheet">
+
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link
+		href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Raleway:ital,wght@0,100..900;1,100..900&display=swap"
+		rel="stylesheet">
+
+</head>
+
+<body>
+
+	<div class="meal-planner-container">
+		<div class="toggle-buttons">
+			<button onclick="prevTable()">Previous</button>
+			<button onclick="nextTable()">Next</button>
+		</div>
+		<div id="meal-plan-1" class="meal-plan active">
 			<table>
 				<thead>
 					<tr>
@@ -18,7 +38,7 @@
 						<th>Užina 2</th>
 						<th>Večera</th>
 						<th>Kcal</th>
-						<th>% Macrosa</th>
+						<th>Djordje</th>
 					</tr>
 				</thead>
 				<tbody>
@@ -36,16 +56,14 @@
 							60 gr kuskusa + salata + 150 gr gotovih leblebija iz konzerve + 80
 							gr pecenog pileceg belog mesa
 						</td>
-						<td>1731</td>
+						<td>1731 cal</td>
 						<td></td>
 					</tr>
 					<tr>
 						<td>2. Dan</td>
 						<td class="meal">
-							<span class="meal-title">Projice sa spanaćem</span
-							><span class="note"
-								>(1/2 pripremljene porcije) + 180 gr Balans jogurta</span
-							>
+							<span class="meal-title">Projice sa spanaćem</span><span class="note">(1/2 pripremljene
+								porcije) + 180 gr Balans jogurta</span>
 						</td>
 						<td class="meal">20 gr lešnika + 150 gr jabuke</td>
 						<td class="meal">
@@ -55,13 +73,10 @@
 							<span class="meal-title">Shake sa jagodom</span>
 						</td>
 						<td class="meal">
-							<span class="meal-title">Projice sa spanaćem</span
-							><span class="note"
-								>(1/2 pripremljene porcije) + 180 gr Balans jogurta</span
-							>
+							<span class="meal-title">Projice sa spanaćem</span><span class="note">(1/2 pripremljene
+								porcije) + 180 gr Balans jogurta</span>
 						</td>
-
-						<td>1721</td>
+						<td>1721 cal</td>
 						<td></td>
 					</tr>
 					<tr>
@@ -77,7 +92,7 @@
 						<td class="meal">
 							150 gr oslića + 40 gr kuskusa + salata + 50 gr graška
 						</td>
-						<td>1727</td>
+						<td>1727 cal</td>
 						<td></td>
 					</tr>
 					<tr>
@@ -97,7 +112,7 @@
 							<span class="meal-title">Uštipci sa tikvicama</span>
 							<span class="note"> (1/2 pripremljene porcije) + salata</span>
 						</td>
-						<td>1745</td>
+						<td>1745 cal</td>
 						<td></td>
 					</tr>
 					<tr>
@@ -106,56 +121,463 @@
 						<td class="meal">20 gr veganskog proteina + voda (izblendati)</td>
 						<td class="meal">
 							<span class="meal-title">Tuna salata </span>
-							<span class="note"
-								>(1/2 pripremljene porcije) + 40 gr integralnog hleba</span
-							>
+							<span class="note">(1/2 pripremljene porcije) + 40 gr integralnog hleba</span>
 						</td>
 						<td class="meal">200 gr jagoda + 25 gr kikirikija</td>
 						<td class="meal">
 							<span class="meal-title">Tuna salata </span>
 							<span class="note">(1/2 pripremljene porcije)</span>
 						</td>
-						<td>1712</td>
+						<td>1712 cal</td>
 						<td></td>
 					</tr>
-
 					<tr>
 						<td>6. Dan</td>
 						<td class="meal"><span class="meal-title">Kapri kolač</span></td>
 						<td class="meal"><span class="meal-title">300 gr jagoda
 
-                            + 100 gr banane</span></td>
+								+ 100 gr banane</span></td>
 						<td class="meal"><span class="meal-title">Fit pizza 1</span></td>
 						<td class="meal"><span class="meal-title">Twix shake</span></td>
-						<td class="meal"><span class="meal-title">Sendvič sa goveđom pršutom</span> <span class="note">+ 300 gr Balans jogurta</span></span></td>
-						<td>1730</td>
+						<td class="meal"><span class="meal-title">Sendvič sa goveđom pršutom</span> <span class="note">+
+								300 gr Balans jogurta</span></span></td>
+						<td>1730 cal</td>
 						<td></td>
 					</tr>
 					<tr>
 						<td>7. Dan</td>
-						<td class="meal"><span class="meal-title">Slana tortilla</span> <span class="note"> + 200 gr Balans jogurta</span></td>
+						<td class="meal"><span class="meal-title">Slana tortilla</span> <span class="note"> + 200 gr
+								Balans jogurta</span></td>
 						<td class="meal">300 gr jagoda</td>
 						<td class="meal"><span class="meal-title">Kremasta pasta sa pistaćima</span></td>
 						<td class="meal"><span class="meal-title"></span>x</td>
 						<td class="meal">150 gr pečenog
-                            pilećeg belog mesa
-                            + salata
-                            + 200 gr kukuruza
-                            + 50 gr kuskusa</td>
-						<td>1722</td>
+							pilećeg belog mesa
+							+ salata
+							+ 200 gr kukuruza
+							+ 50 gr kuskusa</td>
+						<td>1722 cal</td>
 						<td></td>
 					</tr>
 				</tbody>
 			</table>
 		</div>
-		<div id="recipeModal" class="modal">
-			<div class="modal-content">
-				<span class="close">&times;</span>
-				<h2 id="mealName">Recept</h2>
-				<p id="recipeText"></p>
-			</div>
+		<div id="meal-plan-2" class="meal-plan">
+			<table>
+				<thead>
+					<tr>
+						<th class="mobile-week">2. i 4. Nedelja</th>
+						<th>Doručak</th>
+						<th>Užina</th>
+						<th>Ručak</th>
+						<th>Užina 2</th>
+						<th>Večera</th>
+						<th>Kcal</th>
+						<th>Djordje</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+						<td>1. Dan</td>
+						<td class="meal"><span class="meal-title">Cheesecake kolač sa borovnicom</span></td>
+						<td class="meal">200 gr borovnica + 20 gr badema</td>
+						<td class="meal">
+							<span class="meal-title">Tortilla burger</span>
+						</td>
+						<td class="meal"><span class="meal-title">Proteinski sladoled</span></td>
+						<td class="meal">40 gr kuskusa
+							+ 150 gr kukuruza
+							+ salata
+						</td>
+						<td>1733 cal</td>
+						<td></td>
+					</tr>
+					<tr>
+						<td>2. Dan</td>
+						<td class="meal">
+							<span class="meal-title">Pita sa spanaćem</span><span class="note">(1/2 pripremljene
+								porcije)</span>
+						</td>
+						<td class="meal"> 300 gr jagoda
+							+ 10 gr kikiriki putera
+						</td>
+						<td class="meal">
+							<span class="meal-title">150 gr pečenog
+								pilećeg belog mesa
+								+ 50 gr kuskusa + salata + 150 gr kukuruza
+							</span>
+						</td>
+						<td class="meal">
+							<span class="meal-title">x</span>
+						</td>
+						<td class="meal">
+							<span class="meal-title">Pita sa spanaćem</span><span class="note">(1/2 pripremljene
+								porcije)</span>
+						</td>
+						<td>1734 cal</td>
+						<td></td>
+					</tr>
+					<tr>
+						<td>3. Dan</td>
+						<td class="meal">
+							<span class="meal-title">Pita sa šumskim voćem</span>
+						</td>
+						<td class="meal">300 gr voća koje ste koristili za pitu
+							+ 40 gr badema
+						</td>
+						<td class="meal">
+							Posni grašak
+							(1/2 pripremljene porcije) + 200 gr pečenog oslića + salata
+						</td>
+						<td class="meal">120 gr banane</td>
+						<td class="meal">
+							Posni grašak
+							(1/2 pripremljene porcije) + 200 gr pečenog oslića + salata
+						</td>
+						<td>1720 cal</td>
+						<td></td>
+					</tr>
+					<tr>
+						<td>4. Dan</td>
+						<td class="meal">
+							<span class="meal-title">Palačinke sa vanilom i jagodama</span>
+
+						</td>
+						<td class="meal">150 gr jabuke
+							+ 15 gr badema</td>
+						<td class="meal"><span class="meal-title">120 gr pljeskavice
+								od junećeg buta
+								+ 50 gr pirinča + salata (dodati 5 gr maslinovog ulja)
+							</span></td>
+						<td class="meal">
+							<span class="meal-title">120 gr protein pudinga + 250 gr jagoda</span>
+						</td>
+						<td class="meal">
+							<span class="meal-title">120 gr pljeskavice
+								od junećeg buta
+								+ 50 gr pirinča + salata (dodati 5 gr maslinovog ulja)
+							</span>
+						</td>
+						<td>1720 cal</td>
+						<td></td>
+					</tr>
+					<tr>
+						<td>5. Dan</td>
+						<td class="meal"><span class="meal-title">Pita sa jabukom</span></td>
+						<td class="meal">100 gr jabuke
+							+ 30 gr kikiriki putera
+						</td>
+						<td class="meal">
+							<span class="meal-title">200 gr grilovanih lignji + 50 gr pirinča + salata + 100 gr
+								graška</span>
+
+						</td>
+						<td class="meal">20 gr badema</td>
+						<td class="meal">
+							<span class="meal-title">200 gr grilovanih lignji
+								+ 50 gr pirinča + salata + 50 gr graška
+							</span>
+						</td>
+						<td>1721 cal</td>
+						<td></td>
+					</tr>
+					<tr>
+						<td>6. Dan</td>
+						<td class="meal"><span class="meal-title">Švarcvald sladoled</span></td>
+						<td class="meal"><span class="meal-title">150 gr banane</span></td>
+						<td class="meal"><span class="meal-title">Đuveč</span></td>
+						<td class="meal"><span class="meal-title">250 gr jagoda
+								+ 15 gr badema
+							</span></td>
+						<td class="meal"><span class="meal-title">Pita sa tikvicama</span> <span class="note">(1/2
+								pripremljene porcije) + 150 gr Balans jogurta + salata
+							</span></span></td>
+						<td>1730 cal</td>
+						<td></td>
+					</tr>
+					<tr>
+						<td>7. Dan</td>
+						<td class="meal"><span class="meal-title">Pita sa tikvicama</span> <span class="note">(1/2
+								pripremljene porcije) + 150 gr Balans jogurta + salata
+							</span></td>
+						<td class="meal">200 gr banane</td>
+						<td class="meal"><span class="meal-title">Fit pizza 2</span></td>
+						<td class="meal"><span class="meal-title">300 gr jagoda</span></td>
+						<td class="meal"><span class="meal-title">Sendvič sa goveđom pršutom</span><span class="note">+
+								200 gr Balans jogurta</span></td>
+						<td>1725 cal</td>
+						<td></td>
+					</tr>
+				</tbody>
+			</table>
 		</div>
-		<script src="recepies.js"></script>
-		<script src="script.js"></script>
-	</body>
+		<div id="meal-plan-3" class="meal-plan">
+			<table>
+				<thead>
+					<tr>
+						<th>1. i 3. Nedelja</th>
+						<th>Doručak</th>
+						<th>Užina</th>
+						<th>Ručak</th>
+						<th>Užina 2</th>
+						<th>Večera</th>
+						<th>Kcal</th>
+						<th>Miljana</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+						<td>1. Dan</td>
+						<td class="meal"><span class="meal-title">Ferrero kolač</span></td>
+						<td class="meal">x</td>
+						<td class="meal">
+							<span class="meal-title">Salata sa jajima</span>
+						</td>
+						<td class="meal">300 gr jagoda</td>
+						<td class="meal">50 gr kuskusa
+							+ salata
+							+ 100 gr gotovih leblebija iz konzerve
+						</td>
+						<td>1323 cal</td>
+						<td></td>
+					</tr>
+					<tr>
+						<td>2. Dan</td>
+						<td class="meal">
+							<span class="meal-title">Projice sa spanaćem</span><span class="note">(1/2 pripremljene
+								porcije) + 150 gr Balans jogurta</span>
+						</td>
+						<td class="meal">x</td>
+						<td class="meal">
+							<span class="meal-title">Hladna tuna pasta</span>
+						</td>
+						<td class="meal">
+							<span class="meal-title">15 gr badema</span>
+						</td>
+						<td class="meal">
+							<span class="meal-title">Projice sa spanaćem</span><span class="note">(1/2 pripremljene
+								porcije) + 180 gr Balans jogurta</span>
+						</td>
+						<td>1341 cal</td>
+						<td></td>
+					</tr>
+					<tr>
+						<td>3. Dan</td>
+						<td class="meal">
+							<span class="meal-title">Posne keks kuglice</span>
+						</td>
+						<td class="meal">30 gr lešnika + 200 gr jagoda</td>
+						<td class="meal">130 gr oslića
+							+ 30 gr kuskusa + salata + 50 gr graška
+						</td>
+						<td class="meal">x</td>
+						<td class="meal">130 gr oslića
+							+ 30 gr kuskusa + salata + 50 gr graška
+						</td>
+						<td>1335 cal</td>
+						<td></td>
+					</tr>
+					<tr>
+						<td>4. Dan</td>
+						<td class="meal">
+							<span class="meal-title">Uštipci sa tikvicama</span>
+							<span class="note">(1/2 pripremljene porcije) + salata</span>
+						</td>
+						<td class="meal">100 gr banane</td>
+						<td class="meal"><span class="meal-title">Sataraš</span></td>
+						<td class="meal">
+							<span class="meal-title">200 gr jagoda</span>
+						</td>
+						<td class="meal">
+							<span class="meal-title">Uštipci sa tikvicama</span>
+							<span class="note"> (1/2 pripremljene porcije) + salata</span>
+						</td>
+						<td>1358 cal</td>
+						<td></td>
+					</tr>
+					<tr>
+						<td>5. Dan</td>
+						<td class="meal"><span class="meal-title">Voćna salata</span></td>
+						<td class="meal">x</td>
+						<td class="meal">
+							<span class="meal-title">Tuna salata</span>
+							<span class="note">(1/2 pripremljene porcije) + 40 gr integralnog hleba</span>
+						</td>
+						<td class="meal">150 gr jagoda</td>
+						<td class="meal">
+							<span class="meal-title">Tuna salata </span>
+							<span class="note">(1/2 pripremljene porcije)</span>
+						</td>
+						<td>1352 cal</td>
+						<td></td>
+					</tr>
+					<tr>
+						<td>6. Dan</td>
+						<td class="meal"><span class="meal-title">Kapri kolač</span></td>
+						<td class="meal"><span class="meal-title">300 gr jagoda</span></td>
+						<td class="meal"><span class="meal-title">Fit pizza 1</span></td>
+						<td class="meal"><span class="meal-title">200 gr jagoda</span></td>
+						<td class="meal"><span class="meal-title">Sendvič sa goveđom pršutom</span> <span class="note">+
+								300 gr Balans jogurta</span></span></td>
+						<td>1335 cal</td>
+						<td></td>
+					</tr>
+					<tr>
+						<td>7. Dan</td>
+						<td class="meal"><span class="meal-title">Sendvič sa goveđom
+								pršutom</span></td>
+						<td class="meal">300 gr jagoda</td>
+						<td class="meal"><span class="meal-title">Kremasta pasta sa pistaćima</span></td>
+						<td class="meal"><span class="meal-title"></span>x</td>
+						<td class="meal">130 gr pečenog pilećeg belog mesa + salata
+							+ 120 gr kukuruza
+							+ 30 gr kuskusa
+						</td>
+						<td>1343 cal</td>
+						<td></td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+		<div id="meal-plan-4" class="meal-plan">
+			<table>
+				<thead>
+					<tr>
+						<th>2. i 4. Nedelja</th>
+						<th>Doručak</th>
+						<th>Užina</th>
+						<th>Ručak</th>
+						<th>Užina 2</th>
+						<th>Večera</th>
+						<th>Kcal</th>
+						<th>Miljana</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+						<td>1. Dan</td>
+						<td class="meal"><span class="meal-title">Cheesecake kolač sa borovnicom</span></td>
+						<td class="meal">x</td>
+						<td class="meal">
+							<span class="meal-title">Tortilla burger</span>
+						</td>
+						<td class="meal">150 gr banane
+							+ 130 gr borovnica
+						</td>
+						<td class="meal"><span class="meal-title">Proteinski sladoled</span></td>
+						<td>1351 cal</td>
+						<td></td>
+					</tr>
+					<tr>
+						<td>2. Dan</td>
+						<td class="meal">
+							<span class="meal-title">Pita sa spanaćem</span><span class="note">(1/2 pripremljene
+								porcije) + 180 gr Balans jogurta</span>
+						</td>
+						<td class="meal">200 gr jagoda</td>
+						<td class="meal">
+							<span class="meal-title">80 gr pečenog
+								pilećeg belog mesa
+								+ 40 gr kuskusa + salata
+							</span>
+						</td>
+						<td class="meal">
+							<span class="meal-title">x</span>
+						</td>
+						<td class="meal">
+							<span class="meal-title">Pita sa spanaćem</span><span class="note">(1/2 pripremljene
+								porcije) + 180 gr Balans jogurta</span>
+						</td>
+						<td>1350 cal</td>
+						<td></td>
+					</tr>
+					<tr>
+						<td>3. Dan</td>
+						<td class="meal">
+							<span class="meal-title">Pita sa šumskim voćem</span>
+						</td>
+						<td class="meal">200 gr voća koje ste koristili za pitu
+							+ 20 gr badema
+						</td>
+						<td class="meal"><span class="meal-title">Posni grašak</span><span class="note">(1/2
+								pripremljene porcije) + 130 gr pečenog oslića + salata</span></td>
+						<td class="meal">x</td>
+						<td class="meal"><span class="meal-title">Posni grašak</span><span class="note">(1/2
+								pripremljene porcije) + 130 gr pečenog oslića + salata</span></td>
+						<td>1342 cal</td>
+						<td></td>
+					</tr>
+					<tr>
+						<td>4. Dan</td>
+						<td class="meal">
+							<span class="meal-title">Palačinke sa vanilom i jagodama</span>
+						</td>
+						<td class="meal">x</td>
+						<td class="meal"><span class="meal-title">80 gr pljeskavice
+								od junećeg buta
+								+ 50 gr pirinča + salata
+							</span></td>
+						<td class="meal">
+							<span class="meal-title">120 gr protein pudinga + 15 gr badema</span>
+						</td>
+						<td class="meal">
+							<span class="meal-title">80 gr pljeskavice
+								od junećeg buta
+								+ 50 gr pirinča + salata
+							</span>
+
+						</td>
+						<td>1334 cal</td>
+						<td></td>
+					</tr>
+					<tr>
+						<td>5. Dan</td>
+						<td class="meal"><span class="meal-title">Pita sa jabukom</span></td>
+						<td class="meal">100 gr jabuke + 20 gr kikiriki putera</td>
+						<td class="meal">200 gr grilovanih lignji  + 40 gr pirinča + salata</td>
+						<td class="meal">x</td>
+						<td class="meal">200 gr grilovanih lignji + 40 gr pirinča + salata</td>
+						<td>1337 cal</td>
+						<td></td>
+					</tr>
+					<tr>
+						<td>6. Dan</td>
+						<td class="meal"><span class="meal-title">Shake sa jagodom</span></td>
+						<td class="meal"><span class="meal-title">100 gr banane + 200 gr jagoda</span></td>
+						<td class="meal"><span class="meal-title">Đuveč</span></td>
+						<td class="meal"><span class="meal-title">x</span></td>
+						<td class="meal"><span class="meal-title">Pita sa tikvicama</span> <span class="note">(1/2 pripremljene porcije)  + 150 gr Balans jogurta</span></span></td>
+						<td>1339</td>
+						<td></td>
+					</tr>
+					<tr>
+						<td>7. Dan</td>
+						<td class="meal"><span class="meal-title">Pita sa tikvicama</span> <span class="note">(1/2 pripremljene porcije)  + 150 gr Balans jogurta</span></span></td>
+						<td class="meal">x</td>
+						<td class="meal"><span class="meal-title">Fit pizza 2</span></td>
+						<td class="meal">100 gr banane + 100 gr jagoda</td>
+						<td class="meal"><span class="meal-title">Twix shake</span></td>
+						<td>1722 cal</td>
+						<td></td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+	</div>
+
+	<div id="recipeModal" class="modal">
+		<div class="modal-content">
+			<span class="close">&times;</span>
+			<div class="toggle-alternative-buttons">
+				<button id="alternative-prevButton">Previous</button>
+				<button id="alternative-nextButton">Next</button>
+			</div>
+			<h2 id="mealName">Recept</h2>
+			<p id="recipeText"></p>
+		</div>
+	</div>
+	<script src="recepies.js"></script>
+	<script src="script.js"></script>
+</body>
+
 </html>
