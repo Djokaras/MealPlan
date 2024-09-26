@@ -204,6 +204,14 @@ table td:first-child {
 		margin-bottom: 10px;
 	}
 
+	.toggle-buttons button{ 
+		size: 50%;
+	}
+
+	#recipeText {
+		font-size: 0.9rem;
+	}
+
 	.toggle-buttons button {
 		background-color: #a102a1; /* Solid color */
 		color: white; /* White text */
