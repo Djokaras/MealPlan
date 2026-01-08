@@ -1,4 +1,4 @@
-// --- GLOBAL JS ---
+// --- GLOBAL FUNCTIONS ---
 window.showView = function (view) {
 	const plan = document.getElementById('planView');
 	const shop = document.getElementById('shoppingView');
@@ -24,6 +24,7 @@ window.showView = function (view) {
 };
 
 window.toggleLabel = function (input) {
+	if (!input) return;
 	const label = input.parentElement;
 	if (input.checked) {
 		label.classList.add('selector-active');
@@ -34,13 +35,23 @@ window.toggleLabel = function (input) {
 
 window.selectAllShopDays = function () {
 	const checkboxes = document.querySelectorAll('input[name="shopDay"]');
-	checkboxes.forEach((cb) => {
-		cb.checked = true;
-		toggleLabel(cb);
-	});
+	for (let i = 0; i < checkboxes.length; i++) {
+		checkboxes[i].checked = true;
+		toggleLabel(checkboxes[i]);
+	}
 	generateShoppingList();
 };
 
+window.clearShopDays = function () {
+	const checkboxes = document.querySelectorAll('input[name="shopDay"]');
+	for (let i = 0; i < checkboxes.length; i++) {
+		checkboxes[i].checked = false;
+		toggleLabel(checkboxes[i]);
+	}
+	generateShoppingList();
+};
+
+// --- CORE LOGIC ---
 let state = {
 	currentUser: 'Djordje',
 	currentWeek: 1,
@@ -56,7 +67,7 @@ function init() {
 	updateUI();
 	renderShopDayGrid();
 
-	// Inicijalno ne selektujemo ni Djordja ni Miljanu za kupovinu po zelji korisnika (opciono)
+	// Inicijalno nista nije cekirano
 	const djShop = document.getElementById('shopDj');
 	const miShop = document.getElementById('shopMi');
 	djShop.checked = false;
@@ -70,45 +81,53 @@ function renderShopDayGrid() {
 	if (!container) return;
 	container.innerHTML = '';
 	for (let i = 1; i <= 7; i++) {
+		const dayId = 'day-check-' + i;
 		const label = document.createElement('label');
-		// Dodata klasa day-label
+		label.setAttribute('for', dayId);
 		label.className =
 			'day-label flex-none flex flex-col items-center gap-1 px-4 py-3 bg-gray-50 rounded-2xl cursor-pointer min-w-[70px] border-2 transition-all';
-		label.innerHTML = `<span class="text-[10px] font-black text-gray-400 uppercase">Dan ${i}</span><input type="checkbox" name="shopDay" value="${
+		label.innerHTML = `
+                    <span class="text-[10px] font-black text-gray-400 uppercase pointer-events-none">Dan ${i}</span>
+                    <input type="checkbox" id="${dayId}" name="shopDay" value="${
 			i - 1
-		}" class="hidden" onchange="toggleLabel(this); generateShoppingList();">`;
+		}" class="hidden" onchange="toggleLabel(this); generateShoppingList();">
+                `;
 		container.appendChild(label);
-		// Inicijalno nisu cekirani
-		toggleLabel(label.querySelector('input'));
 	}
 }
 
 function generateShoppingList() {
 	const listDj = document.getElementById('shopDj').checked;
 	const listMi = document.getElementById('shopMi').checked;
-	const selDays = Array.from(
-		document.querySelectorAll('input[name="shopDay"]:checked')
-	).map((cb) => parseInt(cb.value));
+
+	const checkboxes = document.querySelectorAll('input[name="shopDay"]');
+	const selDays = [];
+	for (let i = 0; i < checkboxes.length; i++) {
+		if (checkboxes[i].checked) selDays.push(parseInt(checkboxes[i].value));
+	}
 
 	let master = {};
 	const users = [];
 	if (listDj) users.push('Djordje');
 	if (listMi) users.push('Miljana');
 
-	users.forEach((u) => {
+	for (let uIdx = 0; uIdx < users.length; uIdx++) {
+		const u = users[uIdx];
 		const weekData = mealData[u] && mealData[u][state.currentWeek];
-		if (!weekData) return;
+		if (!weekData) continue;
 
-		selDays.forEach((d) => {
+		for (let dIdx = 0; dIdx < selDays.length; dIdx++) {
+			const d = selDays[dIdx];
 			const dayData = weekData[d];
 			const meals = dayData && dayData.meals;
-			if (!meals) return;
+			if (!meals) continue;
 
-			Object.keys(meals).forEach((key) => {
-				parseIngredients(meals[key], master);
-			});
-		});
-	});
+			const keys = Object.keys(meals);
+			for (let kIdx = 0; kIdx < keys.length; kIdx++) {
+				parseIngredients(meals[keys[kIdx]], master);
+			}
+		}
+	}
 
 	state.currentMasterList = master;
 	renderShopUI(master);
@@ -146,11 +165,23 @@ function parseIngredients(str, master) {
 
 function getCategory(name) {
 	const ln = name.toLowerCase();
-	if (subData.nuts.items.some((i) => ln.indexOf(i) !== -1))
+	if (
+		subData.nuts.items.some(function (i) {
+			return ln.indexOf(i) !== -1;
+		})
+	)
 		return 'Orašasto i masti';
-	if (subData.meat.items.some((i) => ln.indexOf(i) !== -1))
+	if (
+		subData.meat.items.some(function (i) {
+			return ln.indexOf(i) !== -1;
+		})
+	)
 		return 'Meso i Riba';
-	if (subData.legumes.items.some((i) => ln.indexOf(i) !== -1))
+	if (
+		subData.legumes.items.some(function (i) {
+			return ln.indexOf(i) !== -1;
+		})
+	)
 		return 'Mahunarke i Skrob';
 	if (
 		ln.indexOf('jogurt') !== -1 ||
@@ -183,52 +214,54 @@ function renderShopUI(list) {
 
 	if (keys.length === 0) {
 		container.innerHTML =
-			'<div class="text-center py-10"><p class="text-gray-400 font-medium italic">Izaberi korisnika i bar jedan dan da vidiš listu za nabavku.</p></div>';
+			'<div class="text-center py-10"><p class="text-gray-400 font-medium italic px-6 text-sm">Izaberi korisnika i bar jedan dan gore da generišeš listu za nabavku.</p></div>';
 		return;
 	}
 
-	keys.forEach((k) => {
-		const item = list[k];
+	for (let i = 0; i < keys.length; i++) {
+		const item = list[keys[i]];
 		if (!cats[item.cat]) cats[item.cat] = [];
 		cats[item.cat].push(item);
-	});
+	}
 
-	Object.keys(cats)
-		.sort()
-		.forEach((cat) => {
-			const items = cats[cat];
-			const sec = document.createElement('div');
-			let itemsHtml = items
-				.map((item) => {
-					let group = null;
-					const subGroups = Object.keys(subData);
-					for (let i = 0; i < subGroups.length; i++) {
-						const g = subData[subGroups[i]];
-						if (
-							g.items &&
-							g.items.some((it) => item.original.indexOf(it) !== -1)
-						) {
-							group = g;
-							break;
-						}
+	const sortedCats = Object.keys(cats).sort();
+	for (let i = 0; i < sortedCats.length; i++) {
+		const cat = sortedCats[i];
+		const items = cats[cat];
+		const sec = document.createElement('div');
+		let itemsHtml = items
+			.map(function (item) {
+				let group = null;
+				const subGroups = Object.keys(subData);
+				for (let j = 0; j < subGroups.length; j++) {
+					const g = subData[subGroups[j]];
+					if (
+						g.items &&
+						g.items.some(function (it) {
+							return item.original.indexOf(it) !== -1;
+						})
+					) {
+						group = g;
+						break;
 					}
-					const canSwap = group && group.conversions;
+				}
+				const canSwap = group && group.conversions;
 
-					let swapButtons = '';
-					if (canSwap) {
-						const targets = Object.keys(group.conversions);
-						swapButtons = targets
-							.map((t) => {
-								const active =
-									item.name === t
-										? 'bg-purple-600 text-white border-purple-600'
-										: 'bg-white text-gray-400 border-gray-200';
-								return `<button onclick="swapShoppingItem('${item.original}', '${t}', ${group.conversions[t]})" class="text-[10px] font-bold px-2 py-1 rounded-md border ${active}">${t}</button>`;
-							})
-							.join('');
-					}
+				let swapButtons = '';
+				if (canSwap) {
+					const targets = Object.keys(group.conversions);
+					swapButtons = targets
+						.map(function (t) {
+							const active =
+								item.name === t
+									? 'bg-purple-600 text-white border-purple-600'
+									: 'bg-white text-gray-400 border-gray-200';
+							return `<button onclick="swapShoppingItem('${item.original}', '${t}', ${group.conversions[t]})" class="text-[10px] font-bold px-2 py-1 rounded-md border ${active}">${t}</button>`;
+						})
+						.join('');
+				}
 
-					return `<div class="px-5 py-4">
+				return `<div class="px-5 py-4">
                                 <div class="flex items-center justify-between">
                                     <div class="flex items-center gap-3">
                                         <input type="checkbox" class="w-5 h-5 accent-purple-600 rounded-lg" onchange="this.nextElementSibling.classList.toggle('checked-item')">
@@ -238,9 +271,7 @@ function renderShopUI(list) {
                                     </div>
                                     <span class="text-sm font-black text-purple-900 bg-purple-50 px-3 py-1 rounded-lg">${
 																			item.qty
-																		}${
-						item.unit.indexOf('kom') !== -1 ? '' : ' ' + item.unit
-					}</span>
+																		}${item.unit.indexOf('kom') !== -1 ? '' : ' ' + item.unit}</span>
                                 </div>
                                 ${
 																	canSwap
@@ -251,38 +282,38 @@ function renderShopUI(list) {
 																		: ''
 																}
                             </div>`;
-				})
-				.join('');
+			})
+			.join('');
 
-			sec.innerHTML = `<h3 class="text-xs font-black text-purple-800 uppercase tracking-widest mb-3 flex items-center gap-2"><span class="w-1.5 h-1.5 bg-purple-800 rounded-full"></span> ${cat}</h3>
+		sec.innerHTML = `<h3 class="text-xs font-black text-purple-800 uppercase tracking-widest mb-3 flex items-center gap-2"><span class="w-1.5 h-1.5 bg-purple-800 rounded-full"></span> ${cat}</h3>
                     <div class="bg-white rounded-3xl border border-gray-100 divide-y divide-gray-50 overflow-hidden shadow-sm">${itemsHtml}</div>`;
-			container.appendChild(sec);
-		});
+		container.appendChild(sec);
+	}
 }
 
 function clearShoppingChecks() {
 	state.swappedIngredients = {};
-	// Vracamo korisnike na necekirano
 	document.getElementById('shopDj').checked = false;
 	document.getElementById('shopMi').checked = false;
 	toggleLabel(document.getElementById('shopDj'));
 	toggleLabel(document.getElementById('shopMi'));
-	// Vracamo dane na necekirano
-	document.querySelectorAll('input[name="shopDay"]').forEach((cb) => {
-		cb.checked = false;
-		toggleLabel(cb);
-	});
+	const checkboxes = document.querySelectorAll('input[name="shopDay"]');
+	for (let i = 0; i < checkboxes.length; i++) {
+		checkboxes[i].checked = false;
+		toggleLabel(checkboxes[i]);
+	}
 	generateShoppingList();
 }
 
 function formatListForSharing() {
 	let text = '🛒 *LISTA ZA KUPOVINU*\n\n';
 	const cats = {};
-	Object.keys(state.currentMasterList).forEach((k) => {
-		const item = state.currentMasterList[k];
+	const keys = Object.keys(state.currentMasterList);
+	for (let i = 0; i < keys.length; i++) {
+		const item = state.currentMasterList[keys[i]];
 		if (!cats[item.cat]) cats[item.cat] = [];
 		cats[item.cat].push(item);
-	});
+	}
 	const icons = {
 		'Orašasto i masti': '🥜',
 		'Meso i Riba': '🥩',
@@ -290,24 +321,23 @@ function formatListForSharing() {
 		'Mlečni proizvodi': '🥛',
 		'Voće i Povrće': '🥦',
 	};
-	Object.keys(cats)
-		.sort()
-		.forEach((cat) => {
-			const items = cats[cat];
-			text += (icons[cat] || '🔹') + ' *' + cat.toUpperCase() + '*\n';
-			items.forEach(
-				(item) =>
-					(text +=
-						'- ' +
-						item.name.charAt(0).toUpperCase() +
-						item.name.slice(1) +
-						': ' +
-						item.qty +
-						item.unit +
-						'\n')
-			);
-			text += '\n';
+	const sortedCats = Object.keys(cats).sort();
+	for (let i = 0; i < sortedCats.length; i++) {
+		const cat = sortedCats[i];
+		const items = cats[cat];
+		text += (icons[cat] || '🔹') + ' *' + cat.toUpperCase() + '*\n';
+		items.forEach(function (item) {
+			text +=
+				'- ' +
+				item.name.charAt(0).toUpperCase() +
+				item.name.slice(1) +
+				': ' +
+				item.qty +
+				item.unit +
+				'\n';
 		});
+		text += '\n';
+	}
 	return text + '_Generisano iz Meal Plannera_';
 }
 
@@ -336,16 +366,33 @@ window.shareOnWhatsApp = function () {
 
 function showToast(msg) {
 	const t = document.getElementById('toast');
+	if (!t) return;
 	t.innerText = msg;
 	t.style.opacity = '1';
 	t.style.transform = 'translate(-50%, -10px)';
-	setTimeout(() => {
+	setTimeout(function () {
 		t.style.opacity = '0';
 		t.style.transform = 'translate(-50%, 0)';
 	}, 2000);
 }
 
-// --- Original Plan Logic ---
+// --- PLAN LOGIC ---
+window.changeUser = function (user) {
+	state.currentUser = user;
+	state.selectedDayIdx = 0;
+	updateUI();
+	renderDaySelector();
+	renderMeals();
+};
+
+window.changeWeek = function (week) {
+	state.currentWeek = week;
+	state.selectedDayIdx = 0;
+	updateUI();
+	renderDaySelector();
+	renderMeals();
+};
+
 function renderDaySelector() {
 	const container = document.getElementById('daySelector');
 	if (!container) return;
@@ -354,20 +401,23 @@ function renderDaySelector() {
 		mealData[state.currentUser][state.currentWeek];
 	if (!data) return;
 	container.innerHTML = '';
-	data.forEach((entry, idx) => {
-		const isActive = state.selectedDayIdx === idx;
+	for (let i = 0; i < data.length; i++) {
+		const entry = data[i];
+		const isActive = state.selectedDayIdx === i;
 		const button = document.createElement('button');
 		button.className =
 			'flex-none px-6 py-3 rounded-2xl font-bold text-sm transition-all shadow-sm ' +
 			(isActive ? 'bg-purple-800 text-white' : 'bg-white text-gray-400');
 		button.innerText = entry.day;
-		button.onclick = () => {
-			state.selectedDayIdx = idx;
-			renderDaySelector();
-			renderMeals();
-		};
+		button.onclick = (function (idx) {
+			return function () {
+				state.selectedDayIdx = idx;
+				renderDaySelector();
+				renderMeals();
+			};
+		})(i);
 		container.appendChild(button);
-	});
+	}
 }
 
 function renderMeals() {
@@ -387,7 +437,11 @@ function renderMeals() {
 		const card = document.createElement('div');
 		card.className =
 			'meal-card p-4 rounded-2xl bg-white border border-gray-100 shadow-sm flex justify-between items-center cursor-pointer active:bg-gray-50';
-		card.onclick = () => openRecipe(name, true);
+		card.onclick = (function (mName) {
+			return function () {
+				openRecipe(mName, true);
+			};
+		})(name);
 		card.innerHTML = `<div><span class="text-[9px] font-black text-purple-400 uppercase tracking-widest mb-1 block">${type}</span><h4 class="text-base font-bold text-gray-800">${name}</h4></div><div class="p-2 bg-purple-50 rounded-xl"><svg class="w-4 h-4 text-purple-600" fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24"><path d="M9 5l7 7-7 7"></path></svg></div>`;
 		container.appendChild(card);
 	}
@@ -418,7 +472,11 @@ function openRecipe(name, isNewRoot) {
 			let found = false;
 			const groups = Object.keys(subData);
 			for (let j = 0; j < groups.length; j++) {
-				if (subData[groups[j]].items.some((i) => lowerIng.indexOf(i) !== -1)) {
+				if (
+					subData[groups[j]].items.some(function (i) {
+						return lowerIng.indexOf(i) !== -1;
+					})
+				) {
 					found = true;
 					break;
 				}
@@ -451,14 +509,14 @@ function openRecipe(name, isNewRoot) {
 	const altList = document.getElementById('alternativesList');
 
 	const uniqueAlts = [];
-	alts.forEach((a) => {
+	alts.forEach(function (a) {
 		if (uniqueAlts.indexOf(a) === -1) uniqueAlts.push(a);
 	});
 
 	if (uniqueAlts.length > 1) {
 		altSection.classList.remove('hidden');
 		altList.innerHTML = '';
-		uniqueAlts.forEach((opt) => {
+		uniqueAlts.forEach(function (opt) {
 			const isActive = opt === name;
 			const card = document.createElement('div');
 			card.className =
@@ -466,7 +524,9 @@ function openRecipe(name, isNewRoot) {
 				(isActive
 					? 'bg-purple-50 border-purple-400'
 					: 'bg-white border-gray-200');
-			card.onclick = () => openRecipe(opt, false);
+			card.onclick = function () {
+				openRecipe(opt, false);
+			};
 			card.innerHTML =
 				`<p class="text-[9px] ` +
 				(isActive ? 'text-purple-600' : 'text-gray-400') +
@@ -477,7 +537,9 @@ function openRecipe(name, isNewRoot) {
 		altSection.classList.add('hidden');
 	}
 	modal.classList.remove('hidden');
-	setTimeout(() => modal.classList.add('opacity-100'), 10);
+	setTimeout(function () {
+		modal.classList.add('opacity-100');
+	}, 10);
 	document.body.style.overflow = 'hidden';
 }
 
@@ -517,18 +579,21 @@ window.showSubstitutions = function (name, amount) {
 		conv = { 'standardno voće': 0.67, banana: 0.35, grožđe: 0.5 };
 	else {
 		const groups = Object.keys(subData);
-		let group = null;
 		for (let i = 0; i < groups.length; i++) {
-			if (subData[groups[i]].items.some((it) => ln.indexOf(it) !== -1)) {
-				group = subData[groups[i]];
+			if (
+				subData[groups[i]].items.some(function (it) {
+					return ln.indexOf(it) !== -1;
+				})
+			) {
+				if (subData[groups[i]].conversions)
+					conv = subData[groups[i]].conversions;
 				break;
 			}
 		}
-		if (group && group.conversions) conv = group.conversions;
 	}
 	const targets = Object.keys(conv);
 	if (targets.length > 0) {
-		targets.forEach((t) => {
+		targets.forEach(function (t) {
 			const factor = conv[t];
 			const finalAmount =
 				t.indexOf('kom') !== -1
@@ -552,24 +617,10 @@ window.hideSubPanel = function () {
 };
 window.closeModal = function () {
 	document.getElementById('recipeModal').classList.remove('opacity-100');
-	setTimeout(() => {
+	setTimeout(function () {
 		document.getElementById('recipeModal').classList.add('hidden');
 		document.body.style.overflow = 'auto';
 	}, 300);
-};
-window.changeUser = function (user) {
-	state.currentUser = user;
-	state.selectedDayIdx = 0;
-	updateUI();
-	renderDaySelector();
-	renderMeals();
-};
-window.changeWeek = function (week) {
-	state.currentWeek = week;
-	state.selectedDayIdx = 0;
-	updateUI();
-	renderDaySelector();
-	renderMeals();
 };
 
 function updateUI() {
@@ -601,7 +652,7 @@ function updateUI() {
 	}
 }
 
-// --- Start ---
+// --- START ---
 if (document.readyState === 'loading') {
 	document.addEventListener('DOMContentLoaded', init);
 } else {

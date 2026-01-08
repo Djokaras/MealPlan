@@ -105,7 +105,7 @@
 					<button
 						onclick="copyShoppingList()"
 						title="Kopiraj listu"
-						class="p-2 bg-purple-100 text-purple-800 rounded-xl"
+						class="p-2 bg-purple-100 text-purple-800 rounded-xl active:scale-90 transition-transform"
 					>
 						<svg
 							class="w-5 h-5"
@@ -122,7 +122,7 @@
 					<button
 						onclick="shareOnWhatsApp()"
 						title="Podeli na WhatsApp"
-						class="p-2 bg-green-100 text-green-700 rounded-xl"
+						class="p-2 bg-green-100 text-green-700 rounded-xl active:scale-90 transition-transform"
 					>
 						<svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
 							<path
@@ -145,6 +145,7 @@
 					</p>
 					<div class="flex gap-3">
 						<label
+							for="shopDj"
 							id="lblDj"
 							class="flex-1 flex items-center justify-center gap-2 px-4 py-3 bg-gray-50 rounded-2xl cursor-pointer border-2 transition-all"
 						>
@@ -157,6 +158,7 @@
 							<span class="text-sm font-bold text-gray-700">Đorđe</span>
 						</label>
 						<label
+							for="shopMi"
 							id="lblMi"
 							class="flex-1 flex items-center justify-center gap-2 px-4 py-3 bg-gray-50 rounded-2xl cursor-pointer border-2 transition-all"
 						>
@@ -177,15 +179,23 @@
 						>
 							Za koje dane?
 						</p>
-						<button
-							onclick="selectAllShopDays()"
-							class="text-[10px] font-bold text-purple-600"
-						>
-							Izaberi sve
-						</button>
+						<div class="flex gap-2">
+							<button
+								onclick="selectAllShopDays()"
+								class="text-[10px] font-bold text-purple-600 bg-purple-50 px-2 py-1 rounded-md"
+							>
+								Sve
+							</button>
+							<button
+								onclick="clearShopDays()"
+								class="text-[10px] font-bold text-gray-400 bg-gray-50 px-2 py-1 rounded-md"
+							>
+								Reset
+							</button>
+						</div>
 					</div>
 					<div
-						class="flex gap-2 overflow-x-auto pb-2 custom-scrollbar"
+						class="flex gap-2 overflow-x-auto pb-2 custom-scrollbar flex-nowrap"
 						id="shopDayGrid"
 					></div>
 				</div>
@@ -339,7 +349,7 @@
 				<div class="px-8 pb-8 pt-4 bg-white flex-shrink-0">
 					<button
 						onclick="closeModal()"
-						class="w-full bg-gray-900 text-white py-4 rounded-xl font-bold active:scale-95 transition-transform"
+						class="w-full bg-gray-900 text-white py-4 rounded-xl font-bold"
 					>
 						Nazad na plan
 					</button>
