@@ -1,4 +1,4 @@
-// --- GLOBAL FUNCTIONS DEFINED FIRST FOR SCOPE ---
+// --- GLOBAL JS ---
 window.showView = function (view) {
 	const plan = document.getElementById('planView');
 	const shop = document.getElementById('shoppingView');
@@ -23,10 +23,22 @@ window.showView = function (view) {
 	}
 };
 
-window.toggleLabelStyle = function (input) {
+window.toggleLabel = function (input) {
 	const label = input.parentElement;
-	if (input.checked) label.classList.add('user-label-active');
-	else label.classList.remove('user-label-active');
+	if (input.checked) {
+		label.classList.add('selector-active');
+	} else {
+		label.classList.remove('selector-active');
+	}
+};
+
+window.selectAllShopDays = function () {
+	const checkboxes = document.querySelectorAll('input[name="shopDay"]');
+	checkboxes.forEach((cb) => {
+		cb.checked = true;
+		toggleLabel(cb);
+	});
+	generateShoppingList();
 };
 
 let state = {
