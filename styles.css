@@ -3,28 +3,37 @@ body {
 	background-color: #f8fafc;
 	-webkit-tap-highlight-color: transparent;
 }
+
 .meal-card {
 	transition: transform 0.2s, box-shadow 0.2s;
 }
+
 .meal-card:active {
 	transform: scale(0.98);
 }
+
 .custom-scrollbar::-webkit-scrollbar {
 	height: 4px;
+	width: 4px;
 }
+
 .custom-scrollbar::-webkit-scrollbar-track {
 	background: #f1f1f1;
 }
+
 .custom-scrollbar::-webkit-scrollbar-thumb {
 	background: #a102a1;
 	border-radius: 10px;
 }
+
 #recipeModal {
 	transition: opacity 0.3s ease;
 }
+
 .content-fade {
 	animation: fadeIn 0.3s ease-in-out;
 }
+
 @keyframes fadeIn {
 	from {
 		opacity: 0;
@@ -35,6 +44,7 @@ body {
 		transform: translateY(0);
 	}
 }
+
 .alternative-scroll {
 	display: flex;
 	overflow-x: auto;
@@ -42,12 +52,14 @@ body {
 	gap: 12px;
 	padding-bottom: 8px;
 }
+
 .alternative-item {
 	scroll-snap-align: start;
 	flex: 0 0 160px;
 	border-width: 2px;
 	transition: all 0.2s ease;
 }
+
 .sub-badge {
 	cursor: pointer;
 	background: #f3e8ff;
@@ -59,6 +71,12 @@ body {
 	display: inline-block;
 	margin-bottom: 2px;
 }
+
 .fixed-modal-height {
 	height: 80vh;
+}
+
+.checked-item {
+	text-decoration: line-through;
+	opacity: 0.5;
 }

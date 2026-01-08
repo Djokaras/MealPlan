@@ -3,14 +3,203 @@ let state = {
 	currentWeek: 1,
 	selectedDayIdx: 0,
 	modalRootMeal: null,
+	swappedIngredients: {}, // Ovde pamtimo šta smo zamenili u listi za kupovinu
 };
 
 function init() {
 	renderDaySelector();
 	renderMeals();
 	updateUI();
+	renderShopDayGrid();
 }
 
+// Menjanje ekrana (Plan / Kupovina)
+function showView(view) {
+	const plan = document.getElementById('planView');
+	const shop = document.getElementById('shoppingView');
+	const nP = document.getElementById('navPlan');
+	const nS = document.getElementById('navShop');
+
+	if (view === 'plan') {
+		plan.classList.remove('hidden');
+		shop.classList.add('hidden');
+		nP.classList.add('text-purple-800', 'scale-110');
+		nP.classList.remove('text-gray-400');
+		nS.classList.add('text-gray-400');
+		nS.classList.remove('text-purple-800', 'scale-110');
+	} else {
+		plan.classList.add('hidden');
+		shop.classList.remove('hidden');
+		nS.classList.add('text-purple-800', 'scale-110');
+		nS.classList.remove('text-gray-400');
+		nP.classList.add('text-gray-400');
+		nP.classList.remove('text-purple-800', 'scale-110');
+		generateShoppingList();
+	}
+}
+
+// Generisanje dana u filteru za kupovinu
+function renderShopDayGrid() {
+	const container = document.getElementById('shopDayGrid');
+	container.innerHTML = '';
+	for (let i = 1; i <= 7; i++) {
+		const label = document.createElement('label');
+		label.className =
+			'flex-none flex flex-col items-center gap-1 px-4 py-3 bg-gray-50 rounded-2xl cursor-pointer min-w-[70px] border-2 border-transparent has-[:checked]:border-purple-600 has-[:checked]:bg-purple-50 transition-all';
+		label.innerHTML = `<span class="text-[10px] font-black text-gray-400 uppercase">Dan ${i}</span><input type="checkbox" name="shopDay" value="${
+			i - 1
+		}" checked class="hidden" onchange="generateShoppingList()">`;
+		container.appendChild(label);
+	}
+}
+
+// GLAVNA LOGIKA ZA SHOPPING LISTU
+function generateShoppingList() {
+	const listDj = document.getElementById('shopDj').checked;
+	const listMi = document.getElementById('shopMi').checked;
+	const selDays = Array.from(
+		document.querySelectorAll('input[name="shopDay"]:checked')
+	).map((cb) => parseInt(cb.value));
+
+	let master = {};
+	const users = [];
+	if (listDj) users.push('Djordje');
+	if (listMi) users.push('Miljana');
+
+	users.forEach((u) => {
+		selDays.forEach((d) => {
+			const meals = mealData[u][state.currentWeek][d]?.meals || {};
+			Object.values(meals).forEach((m) => parseIngredients(m, master));
+		});
+	});
+
+	renderShopUI(master);
+}
+
+// Izvlačenje namirnica iz teksta obroka
+function parseIngredients(str, master) {
+	const regex = /(\d+)\s*(gr|kom|ml|šake)\s*([a-zA-Zčćšđž\s]+)/gi;
+	let m;
+	while ((m = regex.exec(str)) !== null) {
+		let qty = parseInt(m[1]);
+		let unit = m[2];
+		let originalName = m[3].trim().toLowerCase();
+		let name = originalName;
+
+		// KLJUČNO: Ako je korisnik u listi izabrao zamenu (npr. leblebija -> kukuruz)
+		if (state.swappedIngredients[originalName]) {
+			const swap = state.swappedIngredients[originalName];
+			name = swap.target;
+			qty = Math.round(qty * swap.factor);
+		}
+
+		const cat = getCategory(name);
+		const key = `${name}_${unit}`;
+		if (!master[key])
+			master[key] = { name, qty: 0, unit, cat, original: originalName };
+		master[key].qty += qty;
+	}
+}
+
+function getCategory(name) {
+	if (subData.nuts.items.some((i) => name.includes(i)))
+		return 'Orašasto i masti';
+	if (subData.meat.items.some((i) => name.includes(i))) return 'Meso i Riba';
+	if (subData.legumes.items.some((i) => name.includes(i)))
+		return 'Mahunarke i Skrob';
+	if (
+		name.includes('jogurt') ||
+		name.includes('skyr') ||
+		name.includes('sir') ||
+		name.includes('mleko')
+	)
+		return 'Mlečni proizvodi';
+	return 'Voće i Povrće';
+}
+
+// Funkcija koja menja stavku u listi
+function swapShoppingItem(original, target, factor) {
+	if (
+		state.swappedIngredients[original] &&
+		state.swappedIngredients[original].target === target
+	) {
+		delete state.swappedIngredients[original]; // Vrati na original ako klikne ponovo
+	} else {
+		state.swappedIngredients[original] = { target, factor };
+	}
+	generateShoppingList();
+}
+
+function renderShopUI(list) {
+	const container = document.getElementById('shoppingListContainer');
+	container.innerHTML = '';
+	const cats = {};
+	Object.values(list).forEach((item) => {
+		if (!cats[item.cat]) cats[item.cat] = [];
+		cats[item.cat].push(item);
+	});
+
+	Object.entries(cats)
+		.sort()
+		.forEach(([cat, items]) => {
+			const sec = document.createElement('div');
+			sec.innerHTML = `<h3 class="text-xs font-black text-purple-800 uppercase tracking-widest mb-3 flex items-center gap-2"><span class="w-1.5 h-1.5 bg-purple-800 rounded-full"></span> ${cat}</h3>
+            <div class="bg-white rounded-3xl border border-gray-100 divide-y divide-gray-50 overflow-hidden shadow-sm">
+                ${items
+									.map((item) => {
+										// Provera da li ova namirnica ima ponuđene zamene
+										const group = Object.values(subData).find((g) =>
+											g.items.some((i) => item.original.includes(i))
+										);
+										const canSwap = group && group.conversions;
+										return `<div class="px-5 py-4">
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center gap-3">
+                                <input type="checkbox" class="w-5 h-5 accent-purple-600 rounded-lg" onchange="this.nextElementSibling.classList.toggle('checked-item')">
+                                <span class="text-sm font-bold text-gray-700 capitalize">${
+																	item.name
+																}</span>
+                            </div>
+                            <span class="text-sm font-black text-purple-900 bg-purple-50 px-3 py-1 rounded-lg">${
+															item.qty
+														}${
+											item.unit.includes('kom') ? '' : ' ' + item.unit
+										}</span>
+                        </div>
+                        ${
+													canSwap
+														? `<div class="ml-8 mt-2 flex flex-wrap gap-2">
+                            <span class="text-[9px] font-black text-gray-400 uppercase pt-1">Zameni sa:</span>
+                            ${Object.entries(group.conversions)
+															.map(
+																([t, f]) => `
+                                <button onclick="swapShoppingItem('${
+																	item.original
+																}', '${t}', ${f})" class="text-[10px] font-bold px-2 py-1 rounded-md border ${
+																	item.name === t
+																		? 'bg-purple-600 text-white border-purple-600'
+																		: 'bg-white text-gray-400 border-gray-200'
+																}">${t}</button>
+                            `
+															)
+															.join('')}
+                        </div>`
+														: ''
+												}
+                    </div>`;
+									})
+									.join('')}
+            </div>`;
+			container.appendChild(sec);
+		});
+}
+
+function clearShoppingChecks() {
+	state.swappedIngredients = {};
+	generateShoppingList();
+}
+
+// --- Plan Logic (Recepies & Modals) ---
 function renderDaySelector() {
 	const container = document.getElementById('daySelector');
 	const data = mealData[state.currentUser][state.currentWeek];
@@ -53,30 +242,16 @@ function openRecipe(name, isNewRoot = false) {
 	const modal = document.getElementById('recipeModal');
 	document.getElementById('modalMealTitle').innerText = name;
 	hideSubPanel();
-
 	let recipeKey =
 		Object.keys(recipes).find((key) => name.includes(key)) || name;
 	const rawText = recipes[recipeKey] || name;
 	const processedText = rawText.replace(
 		/(\d+)\s*gr\s*([a-zA-Z\sčćšđž]+)/gi,
 		(match, val, ing) => {
-			const lowerIng = ing.toLowerCase();
-			const foundGroup = Object.values(subData).find((g) =>
-				g.items.some((i) => lowerIng.includes(i))
-			);
-			if (
-				foundGroup ||
-				lowerIng.includes('banan') ||
-				lowerIng.includes('prsa') ||
-				lowerIng.includes('tuna')
-			) {
-				return `<span class="sub-badge" onclick="showSubstitutions('${ing.trim()}', ${val})">${match}</span>`;
-			}
-			return match;
+			return `<span class="sub-badge" onclick="showSubstitutions('${ing.trim()}', ${val})">${match}</span>`;
 		}
 	);
 	document.getElementById('modalInstructions').innerHTML = processedText;
-
 	let rootAltKey = Object.keys(alternatives).find((key) =>
 		state.modalRootMeal.includes(key)
 	);
@@ -114,71 +289,43 @@ function showSubstitutions(name, amount) {
 	const panel = document.getElementById('subPanel');
 	const list = document.getElementById('subList');
 	const title = document.getElementById('subTitle');
-	const lowerName = name.toLowerCase();
+	const ln = name.toLowerCase();
 	title.innerText = `Zamena za: ${amount}g ${name}`;
 	list.innerHTML = '';
-	let conversions = {};
-	if (lowerName.includes('banan'))
-		conversions = {
+	let conv = {};
+	if (ln.includes('banan'))
+		conv = {
 			'jabuka/ananas': 1.8,
 			grožđe: 1.45,
 			nar: 1.25,
 			'jagoda/dinja': 2.7,
 		};
-	else if (lowerName.includes('tikvic'))
-		conversions = {
-			krastavac: 1.0,
-			paradajz: 1.0,
-			paprika: 1.0,
-			šampinjoni: 1.0,
-			patlidžan: 1.0,
-		};
-	else if (lowerName.includes('prsa'))
-		conversions = {
-			'goveđa pršuta': 0.5,
-			'mozzarella/feta': 0.6,
-			'jaje (kom)': 0.02,
-			tuna: 1.0,
-		};
-	else if (lowerName.includes('tuna'))
-		conversions = { 'pileći file': 0.88, oslić: 1.27, losos: 0.75 };
-	else if (
-		lowerName.includes('jagod') ||
-		lowerName.includes('dinj') ||
-		lowerName.includes('lubenic')
-	)
-		conversions = { 'standardno voće': 0.67, banana: 0.35, grožđe: 0.5 };
-	else if (subData.fruit.items.some((i) => lowerName.includes(i)))
-		conversions = {
-			banana: 0.52,
-			grožđe: 0.75,
-			nar: 0.65,
-			'jagoda/dinja': 1.5,
-			badem: 0.08,
-		};
+	else if (ln.includes('tikvic'))
+		conv = { krastavac: 1.0, paradajz: 1.0, paprika: 1.0, šampinjoni: 1.0 };
+	else if (ln.includes('prsa'))
+		conv = { 'goveđa pršuta': 0.5, 'mozzarella/feta': 0.6, tuna: 1.0 };
+	else if (ln.includes('tuna'))
+		conv = { 'pileći file': 0.88, oslić: 1.27, losos: 0.75 };
+	else if (ln.includes('jagod') || ln.includes('dinj'))
+		conv = { 'standardno voće': 0.67, banana: 0.35 };
 	else {
 		const group = Object.values(subData).find((g) =>
-			g.items.some((i) => lowerName.includes(i))
+			g.items.some((i) => ln.includes(i))
 		);
-		if (group && group.conversions) conversions = group.conversions;
+		if (group && group.conversions) conv = group.conversions;
 	}
-	if (Object.keys(conversions).length > 0) {
-		Object.entries(conversions).forEach(([target, factor]) => {
-			const finalAmount = target.includes('kom')
-				? (amount * factor).toFixed(1)
-				: Math.round(amount * factor);
-			const item = document.createElement('div');
-			item.className =
-				'bg-white p-2 rounded-lg border border-blue-100 flex flex-col items-center justify-center text-center';
-			item.innerHTML = `<span class="text-[10px] text-gray-400 font-bold uppercase">${target}</span><span class="text-sm font-black text-blue-700">${finalAmount}${
-				target.includes('kom') ? '' : 'g'
-			}</span>`;
-			list.appendChild(item);
-		});
-		panel.classList.remove('hidden');
-		panel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-	}
+	Object.entries(conv).forEach(([t, f]) => {
+		const final = Math.round(amount * f);
+		const item = document.createElement('div');
+		item.className =
+			'bg-white p-2 rounded-lg border border-blue-100 text-center';
+		item.innerHTML = `<span class="text-[10px] text-gray-400 font-bold uppercase">${t}</span><br><span class="text-sm font-black text-blue-700">${final}g</span>`;
+		list.appendChild(item);
+	});
+	panel.classList.remove('hidden');
+	panel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
 }
+
 function hideSubPanel() {
 	document.getElementById('subPanel').classList.add('hidden');
 }
@@ -229,4 +376,5 @@ function updateUI() {
 		w1.className = 'flex-1 py-2 text-sm font-medium text-gray-500';
 	}
 }
+
 window.onload = init;

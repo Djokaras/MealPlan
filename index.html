@@ -26,9 +26,8 @@
 		/>
 	</head>
 
-	<body class="pb-20">
-		<!-- Sav HTML od <header> do kraja </div> (modala) -->
-
+	<body class="pb-28">
+		<!-- Header -->
 		<header class="bg-white shadow-sm sticky top-0 z-40">
 			<div class="max-w-md mx-auto px-4 py-4 flex justify-between items-center">
 				<h1 class="text-xl font-bold text-purple-800 tracking-tight">
@@ -71,7 +70,8 @@
 			</div>
 		</header>
 
-		<main class="max-w-md mx-auto p-4">
+		<!-- Plan View -->
+		<main class="max-w-md mx-auto p-4" id="planView">
 			<div
 				class="flex gap-3 overflow-x-auto pb-4 mb-4 custom-scrollbar"
 				id="daySelector"
@@ -89,6 +89,112 @@
 			</div>
 		</main>
 
+		<!-- Shopping List View -->
+		<main class="max-w-md mx-auto p-4 hidden" id="shoppingView">
+			<div class="flex justify-between items-center mb-6">
+				<h2 class="text-2xl font-bold text-gray-800">Kupovina</h2>
+				<button
+					onclick="clearShoppingChecks()"
+					class="text-xs font-bold text-purple-600 underline"
+				>
+					Resetuj listu
+				</button>
+			</div>
+
+			<div
+				class="bg-white p-5 rounded-3xl shadow-sm border border-gray-100 mb-6 space-y-5"
+			>
+				<div>
+					<p
+						class="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-3"
+					>
+						Korisnici:
+					</p>
+					<div class="flex gap-3">
+						<label
+							class="flex-1 flex items-center justify-center gap-2 px-4 py-3 bg-gray-50 rounded-2xl cursor-pointer border-2 border-transparent has-[:checked]:border-purple-600 has-[:checked]:bg-purple-50 transition-all"
+						>
+							<input
+								type="checkbox"
+								id="shopDj"
+								checked
+								class="hidden"
+								onchange="generateShoppingList()"
+							/>
+							<span class="text-sm font-bold text-gray-700">Đorđe</span>
+						</label>
+						<label
+							class="flex-1 flex items-center justify-center gap-2 px-4 py-3 bg-gray-50 rounded-2xl cursor-pointer border-2 border-transparent has-[:checked]:border-purple-600 has-[:checked]:bg-purple-50 transition-all"
+						>
+							<input
+								type="checkbox"
+								id="shopMi"
+								checked
+								class="hidden"
+								onchange="generateShoppingList()"
+							/>
+							<span class="text-sm font-bold text-gray-700">Miljana</span>
+						</label>
+					</div>
+				</div>
+				<div>
+					<p
+						class="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-3"
+					>
+						Izaberi dane:
+					</p>
+					<div
+						class="flex gap-2 overflow-x-auto pb-2 custom-scrollbar"
+						id="shopDayGrid"
+					></div>
+				</div>
+			</div>
+
+			<div id="shoppingListContainer" class="space-y-6 pb-10"></div>
+		</main>
+
+		<!-- Bottom Navigation -->
+		<nav
+			class="fixed bottom-0 left-0 right-0 bg-white/90 backdrop-blur-md border-t border-gray-100 px-8 py-3 flex justify-around items-center z-50 shadow-[0_-10px_20px_rgba(0,0,0,0.03)]"
+		>
+			<button
+				onclick="showView('plan')"
+				id="navPlan"
+				class="flex flex-col items-center gap-1 text-purple-800 transition-all scale-110"
+			>
+				<svg
+					class="w-6 h-6"
+					fill="none"
+					stroke="currentColor"
+					stroke-width="2.5"
+					viewBox="0 0 24 24"
+				>
+					<path
+						d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"
+					></path>
+				</svg>
+				<span class="text-[10px] font-black uppercase">Plan</span>
+			</button>
+			<button
+				onclick="showView('shopping')"
+				id="navShop"
+				class="flex flex-col items-center gap-1 text-gray-400 transition-all"
+			>
+				<svg
+					class="w-6 h-6"
+					fill="none"
+					stroke="currentColor"
+					stroke-width="2"
+					viewBox="0 0 24 24"
+				>
+					<path
+						d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"
+					></path>
+				</svg>
+				<span class="text-[10px] font-black uppercase">Kupovina</span>
+			</button>
+		</nav>
+
 		<!-- Modal -->
 		<div
 			id="recipeModal"
@@ -104,7 +210,6 @@
 				<div
 					class="w-12 h-1.5 bg-gray-300 rounded-full mx-auto my-4 sm:hidden flex-shrink-0"
 				></div>
-
 				<div
 					class="px-8 pt-4 pb-4 flex justify-between items-start flex-shrink-0 border-b border-gray-50"
 				>
@@ -131,7 +236,6 @@
 						</svg>
 					</button>
 				</div>
-
 				<div class="flex-1 overflow-y-auto px-8 py-6 custom-scrollbar">
 					<div id="modalMainContent" class="space-y-6">
 						<div class="content-fade" id="recipeSection">
@@ -170,7 +274,6 @@
 						</div>
 					</div>
 				</div>
-
 				<div
 					id="alternativesSection"
 					class="hidden px-8 py-4 bg-gray-50/50 border-t border-gray-100 flex-shrink-0"
@@ -185,11 +288,10 @@
 						class="alternative-scroll custom-scrollbar"
 					></div>
 				</div>
-
 				<div class="px-8 pb-8 pt-4 bg-white flex-shrink-0">
 					<button
 						onclick="closeModal()"
-						class="w-full bg-gray-900 text-white py-4 rounded-xl font-bold shadow-lg active:scale-95 transition-transform"
+						class="w-full bg-gray-900 text-white py-4 rounded-xl font-bold"
 					>
 						Nazad na plan
 					</button>
