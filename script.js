@@ -1,150 +1,232 @@
-document.addEventListener('DOMContentLoaded', () => {
-	const meals = document.querySelectorAll('.meal-title'); // Targeting .meal-title instead of .meal
+let state = {
+	currentUser: 'Djordje',
+	currentWeek: 1,
+	selectedDayIdx: 0,
+	modalRootMeal: null,
+};
+
+function init() {
+	renderDaySelector();
+	renderMeals();
+	updateUI();
+}
+
+function renderDaySelector() {
+	const container = document.getElementById('daySelector');
+	const data = mealData[state.currentUser][state.currentWeek];
+	container.innerHTML = '';
+	data.forEach((entry, idx) => {
+		const isActive = state.selectedDayIdx === idx;
+		const button = document.createElement('button');
+		button.className = `flex-none px-6 py-3 rounded-2xl font-bold text-sm transition-all shadow-sm ${
+			isActive ? 'bg-purple-800 text-white' : 'bg-white text-gray-400'
+		}`;
+		button.innerText = entry.day;
+		button.onclick = () => {
+			state.selectedDayIdx = idx;
+			renderDaySelector();
+			renderMeals();
+		};
+		container.appendChild(button);
+	});
+}
+
+function renderMeals() {
+	const container = document.getElementById('mealsContainer');
+	const data =
+		mealData[state.currentUser][state.currentWeek][state.selectedDayIdx];
+	container.innerHTML = '';
+	['Doručak', 'Užina', 'Ručak', 'Užina2', 'Večera'].forEach((type) => {
+		const name = data.meals[type];
+		if (!name || name === 'x') return;
+		const card = document.createElement('div');
+		card.className = `meal-card p-4 rounded-2xl bg-white border border-gray-100 shadow-sm flex justify-between items-center cursor-pointer active:bg-gray-50`;
+		card.onclick = () => openRecipe(name, true);
+		card.innerHTML = `<div><span class="text-[9px] font-black text-purple-400 uppercase tracking-widest mb-1 block">${type}</span><h4 class="text-base font-bold text-gray-800">${name}</h4></div><div class="p-2 bg-purple-50 rounded-xl"><svg class="w-4 h-4 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M9 5l7 7-7 7"></path></svg></div>`;
+		container.appendChild(card);
+	});
+	document.getElementById('dailyKcal').innerText = `${data.kcal} kcal`;
+}
+
+function openRecipe(name, isNewRoot = false) {
+	if (isNewRoot) state.modalRootMeal = name;
 	const modal = document.getElementById('recipeModal');
-	const recipeText = document.getElementById('recipeText');
-	const mealName = document.getElementById('mealName');
-	const closeModal = document.querySelector('.close');
+	document.getElementById('modalMealTitle').innerText = name;
+	hideSubPanel();
 
-	// Debugging: Check if 'recipes' is accessible
-	console.log('Recipes object:', recipes);
-
-	//Register the service worker in script.js:
-	if ('serviceWorker' in navigator) {
-		navigator.serviceWorker
-			.register('/service-worker.js')
-			.then(() => console.log('✅ Service Worker registered!'));
-	}
-
-	// Function to add reciprocal alternatives
-	function addReciprocalAlternatives() {
-		for (const meal in alternatives) {
-			const altMeals = alternatives[meal];
-			altMeals.forEach((altMeal) => {
-				if (!alternatives[altMeal]) {
-					alternatives[altMeal] = [];
-				}
-				if (!alternatives[altMeal].includes(meal)) {
-					alternatives[altMeal].push(meal);
-				}
-				altMeals.forEach((otherAltMeal) => {
-					if (
-						altMeal !== otherAltMeal &&
-						!alternatives[altMeal].includes(otherAltMeal)
-					) {
-						alternatives[altMeal].push(otherAltMeal);
-					}
-				});
-			});
+	let recipeKey =
+		Object.keys(recipes).find((key) => name.includes(key)) || name;
+	const rawText = recipes[recipeKey] || name;
+	const processedText = rawText.replace(
+		/(\d+)\s*gr\s*([a-zA-Z\sčćšđž]+)/gi,
+		(match, val, ing) => {
+			const lowerIng = ing.toLowerCase();
+			const foundGroup = Object.values(subData).find((g) =>
+				g.items.some((i) => lowerIng.includes(i))
+			);
+			if (
+				foundGroup ||
+				lowerIng.includes('banan') ||
+				lowerIng.includes('prsa') ||
+				lowerIng.includes('tuna')
+			) {
+				return `<span class="sub-badge" onclick="showSubstitutions('${ing.trim()}', ${val})">${match}</span>`;
+			}
+			return match;
 		}
-	}
+	);
+	document.getElementById('modalInstructions').innerHTML = processedText;
 
-	// Call the function to populate reciprocal alternatives
-	addReciprocalAlternatives();
-
-	function getAlternative(meal) {
-		return alternatives[meal] || 'Alternative recipes not found';
-	}
-
-	// Attach event listener to each meal-title
-	meals.forEach((meal) => {
-		meal.addEventListener('click', () => {
-			const clickedMeal = meal.textContent.trim(); // Trim to remove extra whitespace
-			console.log('Clicked meal:', clickedMeal); // Debug log
-			mealName.textContent = clickedMeal; // Set the meal name in the modal
-			recipeText.textContent = recipes[clickedMeal] || 'Recipe not found'; // Get recipe from the object
-			const alternativeMeals = getAlternative(clickedMeal);
-			console.log('Alternative recipes:', alternativeMeals);
-			modal.style.display = 'flex';
+	let rootAltKey = Object.keys(alternatives).find((key) =>
+		state.modalRootMeal.includes(key)
+	);
+	const alts = rootAltKey
+		? [rootAltKey, ...alternatives[rootAltKey]]
+		: [state.modalRootMeal];
+	const altSection = document.getElementById('alternativesSection');
+	const altList = document.getElementById('alternativesList');
+	if (alts.length > 1) {
+		altSection.classList.remove('hidden');
+		altList.innerHTML = '';
+		[...new Set(alts)].forEach((opt) => {
+			const isActive = opt === name;
+			const card = document.createElement('div');
+			card.className = `alternative-item p-3 rounded-xl cursor-pointer border ${
+				isActive
+					? 'bg-purple-50 border-purple-400 active'
+					: 'bg-white border-gray-200'
+			}`;
+			card.onclick = () => openRecipe(opt, false);
+			card.innerHTML = `<p class="text-[9px] ${
+				isActive ? 'text-purple-600' : 'text-gray-400'
+			} font-bold uppercase mb-1">Opcija</p><p class="text-xs font-bold text-gray-800 line-clamp-2">${opt}</p>`;
+			altList.appendChild(card);
 		});
-	});
-
-	// Function that retrieves the alternative meals for a given meal
-
-	console.log(getAlternative('Ferrero kolač'));
-
-	closeModal.addEventListener('click', () => {
-		modal.style.display = 'none';
-	});
-
-	window.onclick = (event) => {
-		if (event.target === modal) {
-			modal.style.display = 'none';
-		}
-	};
-});
-
-// Toggling different alternatives in the modal
-
-const nextButton = document.getElementById('alternative-nextButton');
-const prevButton = document.getElementById('alternative-prevButton');
-
-currentIndex = 0;
-
-// Function to display the next alternative meal
-function displayNextAlternative() {
-	let currentMeal = mealName.textContent;
-	const alternativeMeals = alternatives[currentMeal];
-
-	if (alternativeMeals && alternativeMeals.length > 0) {
-		currentIndex = (currentIndex + 1) % alternativeMeals.length; // Move to next alternative (loop back if at the end)
-		const nextMeal = alternativeMeals[currentIndex];
-
-		// Update the displayed meal name and recipe
-		mealName.textContent = nextMeal;
-		recipeText.textContent = recipes[nextMeal];
 	} else {
-		recipeText.textContent = 'No alternatives found for this meal.';
+		altSection.classList.add('hidden');
+	}
+	modal.classList.remove('hidden');
+	setTimeout(() => modal.classList.add('opacity-100'), 10);
+	document.body.style.overflow = 'hidden';
+}
+
+function showSubstitutions(name, amount) {
+	const panel = document.getElementById('subPanel');
+	const list = document.getElementById('subList');
+	const title = document.getElementById('subTitle');
+	const lowerName = name.toLowerCase();
+	title.innerText = `Zamena za: ${amount}g ${name}`;
+	list.innerHTML = '';
+	let conversions = {};
+	if (lowerName.includes('banan'))
+		conversions = {
+			'jabuka/ananas': 1.8,
+			grožđe: 1.45,
+			nar: 1.25,
+			'jagoda/dinja': 2.7,
+		};
+	else if (lowerName.includes('tikvic'))
+		conversions = {
+			krastavac: 1.0,
+			paradajz: 1.0,
+			paprika: 1.0,
+			šampinjoni: 1.0,
+			patlidžan: 1.0,
+		};
+	else if (lowerName.includes('prsa'))
+		conversions = {
+			'goveđa pršuta': 0.5,
+			'mozzarella/feta': 0.6,
+			'jaje (kom)': 0.02,
+			tuna: 1.0,
+		};
+	else if (lowerName.includes('tuna'))
+		conversions = { 'pileći file': 0.88, oslić: 1.27, losos: 0.75 };
+	else if (
+		lowerName.includes('jagod') ||
+		lowerName.includes('dinj') ||
+		lowerName.includes('lubenic')
+	)
+		conversions = { 'standardno voće': 0.67, banana: 0.35, grožđe: 0.5 };
+	else if (subData.fruit.items.some((i) => lowerName.includes(i)))
+		conversions = {
+			banana: 0.52,
+			grožđe: 0.75,
+			nar: 0.65,
+			'jagoda/dinja': 1.5,
+			badem: 0.08,
+		};
+	else {
+		const group = Object.values(subData).find((g) =>
+			g.items.some((i) => lowerName.includes(i))
+		);
+		if (group && group.conversions) conversions = group.conversions;
+	}
+	if (Object.keys(conversions).length > 0) {
+		Object.entries(conversions).forEach(([target, factor]) => {
+			const finalAmount = target.includes('kom')
+				? (amount * factor).toFixed(1)
+				: Math.round(amount * factor);
+			const item = document.createElement('div');
+			item.className =
+				'bg-white p-2 rounded-lg border border-blue-100 flex flex-col items-center justify-center text-center';
+			item.innerHTML = `<span class="text-[10px] text-gray-400 font-bold uppercase">${target}</span><span class="text-sm font-black text-blue-700">${finalAmount}${
+				target.includes('kom') ? '' : 'g'
+			}</span>`;
+			list.appendChild(item);
+		});
+		panel.classList.remove('hidden');
+		panel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
 	}
 }
-
-// Function to display the previous alternative meal
-function displayPreviousAlternative() {
-	let currentMeal = mealName.textContent;
-	const alternativeMeals = alternatives[currentMeal];
-
-	if (alternativeMeals && alternativeMeals.length > 0) {
-		currentIndex =
-			(currentIndex - 1 + alternativeMeals.length) % alternativeMeals.length; // Move to previous alternative (loop back if at the start)
-		const prevMeal = alternativeMeals[currentIndex];
-
-		// Update the displayed meal name and recipe
-		mealName.textContent = prevMeal;
-		recipeText.textContent = recipes[prevMeal];
+function hideSubPanel() {
+	document.getElementById('subPanel').classList.add('hidden');
+}
+function closeModal() {
+	document.getElementById('recipeModal').classList.remove('opacity-100');
+	setTimeout(() => {
+		document.getElementById('recipeModal').classList.add('hidden');
+		document.body.style.overflow = 'auto';
+	}, 300);
+}
+function changeUser(user) {
+	state.currentUser = user;
+	state.selectedDayIdx = 0;
+	updateUI();
+	renderDaySelector();
+	renderMeals();
+}
+function changeWeek(week) {
+	state.currentWeek = week;
+	state.selectedDayIdx = 0;
+	updateUI();
+	renderDaySelector();
+	renderMeals();
+}
+function updateUI() {
+	const dj = document.getElementById('btnDjordje');
+	const mi = document.getElementById('btnMiljana');
+	if (state.currentUser === 'Djordje') {
+		dj.className =
+			'px-3 py-1 rounded-full text-xs font-semibold border-2 bg-purple-800 text-white border-purple-800';
+		mi.className =
+			'px-3 py-1 rounded-full text-xs font-semibold border-2 bg-white text-gray-500 border-transparent';
 	} else {
-		recipeText.textContent = 'No alternatives found for this meal.';
+		mi.className =
+			'px-3 py-1 rounded-full text-xs font-semibold border-2 bg-purple-800 text-white border-purple-800';
+		dj.className =
+			'px-3 py-1 rounded-full text-xs font-semibold border-2 bg-white text-gray-500 border-transparent';
+	}
+	const w1 = document.getElementById('week1Btn');
+	const w2 = document.getElementById('week2Btn');
+	if (state.currentWeek === 1) {
+		w1.className =
+			'flex-1 py-2 text-sm font-medium rounded-md bg-white shadow-sm text-purple-800';
+		w2.className = 'flex-1 py-2 text-sm font-medium text-gray-500';
+	} else {
+		w2.className =
+			'flex-1 py-2 text-sm font-medium rounded-md bg-white shadow-sm text-purple-800';
+		w1.className = 'flex-1 py-2 text-sm font-medium text-gray-500';
 	}
 }
-
-// Add event listeners to the Next and Previous buttons
-nextButton.addEventListener('click', displayNextAlternative);
-prevButton.addEventListener('click', displayPreviousAlternative);
-
-// Button and toggling different tables of recipies
-
-let currentTable = 0;
-const mealPlans = document.querySelectorAll('.meal-plan');
-
-function showTable(index) {
-	// Hide all meal plans
-	mealPlans.forEach((mealPlan) => {
-		mealPlan.classList.remove('active');
-	});
-
-	// Show the meal plan at the given index
-	mealPlans[index].classList.add('active');
-}
-
-function nextTable() {
-	// Increment the table index and wrap around if necessary
-	currentTable = (currentTable + 1) % mealPlans.length;
-	showTable(currentTable);
-}
-
-function prevTable() {
-	// Decrement the table index and wrap around if necessary
-	currentTable = (currentTable - 1 + mealPlans.length) % mealPlans.length;
-	showTable(currentTable);
-}
-
-// Initially show the first table
-showTable(currentTable);
+window.onload = init;

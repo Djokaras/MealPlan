@@ -1,307 +1,64 @@
-* {
-	box-sizing: border-box;
-	margin: 0;
-	padding: 0;
-}
-
 body {
-	font-family: "Poppins", sans-serif;
-	font-size: 1.4rem;
-	padding: 20px;
-	background-color: #f9f9f9;
-	color: #a102a1;
+	font-family: 'Poppins', sans-serif;
+	background-color: #f8fafc;
+	-webkit-tap-highlight-color: transparent;
 }
-
-.meal-planner-container {
-	width: 100%;
-	max-width: 1200px;
-	margin: 0 auto;
+.meal-card {
+	transition: transform 0.2s, box-shadow 0.2s;
 }
-
-h2, h3, h4{
-	font-family: "Poppins", sans-serif;
+.meal-card:active {
+	transform: scale(0.98);
 }
-
-table {
-	width: 100%;
-	border-collapse: collapse;
-	margin-bottom: 20px;
+.custom-scrollbar::-webkit-scrollbar {
+	height: 4px;
 }
-
-thead th {
-	background-color: #f3f3f3;
-	text-align: center;
-	padding: 10px;
-	font-weight: bold;
-	border: 1px solid #979797;
+.custom-scrollbar::-webkit-scrollbar-track {
+	background: #f1f1f1;
 }
-
-tbody td {
-	text-align: center;
-	padding: 10px;
-	border: 1px solid #979797;
-}
-
-/* Alternate row colors (Lighter and Darker shades) */
-tbody tr:nth-child(even) {
-	background-color: #adadad; /* Lighter shade */
-}
-
-tbody tr:nth-child(odd) {
-	background-color: #dfdbde; /* Darker shade */
-}
-
-/* Adjusting table cell widths */
-td {
-	font-size: 14px;
-	vertical-align: middle;
-}
-
-table th,
-table td {
-	width: 12%;
-}
-
-table th:first-child,
-table td:first-child {
-	width: 10%;
-}
-
-.meal-title {
-	cursor: pointer; /* Changes cursor to pointer on hover */
-}
-
-.meal-plan {
-    display: none; /* Hide all meal plans by default */
-}
-
-.meal-plan.active {
-    display: block; /* Show only the active meal plan */
-}
-
-
-/* Style for table buttons (previous and next) */
-
-.toggle-buttons {
-    text-align: left;
-    margin-top: 20px;
-	margin-bottom: 20px;
-}
-
-.toggle-buttons button:first-child {
-	margin-left: 0;
-	margin-right: 0;
-}
-
-.toggle-buttons button {
-    background-color: #a102a1; /* Solid color */
-    color: white; /* White text */
-    border: none;
-    border-radius: 8px; /* Slight curve */
-    padding: 10px 20px;
-    font-size: 18px;
-    cursor: pointer;
-    transition: transform 0.1s ease-in-out, box-shadow 0.1s ease-in-out;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Slight shadow for a 3D look */
-    margin: 0 10px;
-	width: 10rem; /* Use a percentage-based width */
-
-}
-
-.toggle-buttons button:hover {
-    box-shadow: 0 6px 10px rgba(0, 0, 0, 0.15); /* Slightly deeper shadow on hover */
-}
-
-.toggle-buttons button:active {
-    transform: scale(0.95); /* Shrinking effect on press */
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Shadow becomes smaller when pressed */
-}
-
-/* Modal of recipies style */
-.modal {
-	display: none; /* Hidden by default */
-	position: fixed; /* Stay in place */
-	z-index: 1000; /* Sit on top */
-	left: 0;
-	top: 0;
-	width: 100%; /* Full width */
-	height: 100%; /* Full height */
-	background-color: rgba(0, 0, 0, 0.5); /* Black background with opacity */
-	overflow: hidden; /* Disable overflow on the modal container */
-	display: none;
-	justify-content: center;
-	align-items: center;
-
-
-
-
-}
-
-.modal-content {
-	background-color: #fff;
-	margin: 15% auto; /* 15% from the top and centered */
-	padding: 20px;
-	border: 1px solid #888;
+.custom-scrollbar::-webkit-scrollbar-thumb {
+	background: #a102a1;
 	border-radius: 10px;
-	width: 80%; /* Could be more or less, depending on screen size */
-	max-height: 80%; /* Ensure modal content doesn't overflow out of the screen */
-	overflow-y: auto; /* Allow scrolling inside the modal */
-
-
 }
-
-.modal-content h2 {
-	margin-bottom: 20px; /* Adds padding under the h2 element */
-	text-align: left;
+#recipeModal {
+	transition: opacity 0.3s ease;
 }
-
-.close {
-	color: #aaa;
-	float: right;
-	font-size: 28px;
-	font-weight: bold;
-	margin-left: 10px;
+.content-fade {
+	animation: fadeIn 0.3s ease-in-out;
 }
-
-.close:hover,
-.close:focus {
-	color: black;
-	text-decoration: none;
+@keyframes fadeIn {
+	from {
+		opacity: 0;
+		transform: translateY(10px);
+	}
+	to {
+		opacity: 1;
+		transform: translateY(0);
+	}
+}
+.alternative-scroll {
+	display: flex;
+	overflow-x: auto;
+	scroll-snap-type: x mandatory;
+	gap: 12px;
+	padding-bottom: 8px;
+}
+.alternative-item {
+	scroll-snap-align: start;
+	flex: 0 0 160px;
+	border-width: 2px;
+	transition: all 0.2s ease;
+}
+.sub-badge {
 	cursor: pointer;
+	background: #f3e8ff;
+	color: #7e22ce;
+	padding: 2px 6px;
+	border-radius: 6px;
+	font-weight: 600;
+	border: 1px solid #e9d5ff;
+	display: inline-block;
+	margin-bottom: 2px;
 }
-
-.toggle-alternative-buttons {
-    text-align: left;
-    margin-top: 20px;
-	margin-bottom: 20px;
+.fixed-modal-height {
+	height: 80vh;
 }
-
-.toggle-alternative-buttons button:first-child {
-	margin-left: 0;
-	margin-right: 0;
-}
-
-.toggle-alternative-buttons button {
-    background-color: #a102a1; /* Solid color */
-    color: white; /* White text */
-    border: none;
-    border-radius: 8px; /* Slight curve */
-    padding: 10px 20px;
-    font-size: 12px;
-    cursor: pointer;
-    transition: transform 0.1s ease-in-out, box-shadow 0.1s ease-in-out;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Slight shadow for a 3D look */
-    margin: 0 10px;
-
-}
-
-.toggle-alternative-buttons button:hover {
-    box-shadow: 0 6px 10px rgba(0, 0, 0, 0.15); /* Slightly deeper shadow on hover */
-}
-
-.toggle-alternative-buttons button:active {
-    transform: scale(0.95); /* Shrinking effect on press */
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Shadow becomes smaller when pressed */
-}
-
-/* Responsive Styles */
-@media (max-width: 768px) {
-	table {
-		width: 100%;
-		border-collapse: collapse;
-	}
-
-	.toggle-buttons {
-		text-align: center;
-		margin-top: 20px;
-		margin-bottom: 10px;
-		display: flex;
-		justify-content: space-between; /* Space between the buttons */
-		flex-direction: row; /* Ensure buttons are in a row on smaller screens */
-	}
-
-	.toggle-buttons button{ 
-		flex: 1; /* Ensure buttons are evenly spaced */
-		min-width: 0; /* Prevent buttons from overflowing */		
-	}
-
-	#recipeText {
-		font-size: 0.9rem;
-	}
-
-	.toggle-buttons button {
-		background-color: #a102a1; /* Solid color */
-		color: white; /* White text */
-		border: none;
-		border-radius: 8px; /* Slight curve */
-		padding: 10px 20px;
-		font-size: 18px;
-		cursor: pointer;
-		transition: transform 0.1s ease-in-out, box-shadow 0.1s ease-in-out;
-		box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Slight shadow for a 3D look */
-		margin: 0 10px;	
-	}
-
-    table td:first-child{
-        width: 100%;
-        font-weight: bold;
-        font-size: large;
-        background-color: #a102a1;
-        color: #fff;
-    }
-
-    table td {
-        width: 100%;
-    }
-
-	thead {
-		width: 100%;
-		display: table; /* Ensure it behaves like a table element */
-		table-layout: fixed; /* Enforce the width constraints */
-	}
-
-	thead th{
-		display: none;  /*Hides the header on small screens */
-	}
-
-	/* Display only the first <th> */
-    table thead th:first-child {
-        display: table-cell;
-		size: 50%;
-    }
-    
-    /* Display only the last <th> */
-    table thead th:last-child {
-        display: table-cell;
-		size: 50%;
-
-    }
-
-	tr {
-		margin-bottom: 15px; /* Adds space between rows */
-		border-bottom: 1px solid #ddd;
-	}
-
-	td {
-		display: block;
-		padding: 10px;
-		position: relative; /* Required for pseudo-elements */
-        width: 100%;
-	}
-
-	/* td::before {
-		content: attr(data-label); /* Uses data-label for each cell */
-		position: absolute;
-		left: 10px;
-		top: 0;
-		width: 40%;
-		padding-right: 10px;
-		white-space: nowrap; /* Prevents text from wrapping */
-		font-weight: bold;
-		background-color: #f5f5f5;
-		padding: 5px;
-	} */
-
-	.meal-title {
-		font-size: 16px;
-	}
