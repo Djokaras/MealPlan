@@ -28,6 +28,7 @@ window.toggleLabelStyle = function (input) {
 	if (input.checked) label.classList.add('user-label-active');
 	else label.classList.remove('user-label-active');
 };
+
 let state = {
 	currentUser: 'Djordje',
 	currentWeek: 1,
@@ -42,8 +43,14 @@ function init() {
 	renderMeals();
 	updateUI();
 	renderShopDayGrid();
-	toggleLabelStyle(document.getElementById('shopDj'));
-	toggleLabelStyle(document.getElementById('shopMi'));
+
+	// Inicijalno ne selektujemo ni Djordja ni Miljanu za kupovinu po zelji korisnika (opciono)
+	const djShop = document.getElementById('shopDj');
+	const miShop = document.getElementById('shopMi');
+	djShop.checked = false;
+	miShop.checked = false;
+	toggleLabel(djShop);
+	toggleLabel(miShop);
 }
 
 function renderShopDayGrid() {
@@ -52,13 +59,15 @@ function renderShopDayGrid() {
 	container.innerHTML = '';
 	for (let i = 1; i <= 7; i++) {
 		const label = document.createElement('label');
+		// Dodata klasa day-label
 		label.className =
-			'flex-none flex flex-col items-center gap-1 px-4 py-3 bg-gray-50 rounded-2xl cursor-pointer min-w-[70px] border-2 border-transparent transition-all';
+			'day-label flex-none flex flex-col items-center gap-1 px-4 py-3 bg-gray-50 rounded-2xl cursor-pointer min-w-[70px] border-2 transition-all';
 		label.innerHTML = `<span class="text-[10px] font-black text-gray-400 uppercase">Dan ${i}</span><input type="checkbox" name="shopDay" value="${
 			i - 1
-		}" checked class="hidden" onchange="toggleLabelStyle(this); generateShoppingList();">`;
+		}" class="hidden" onchange="toggleLabel(this); generateShoppingList();">`;
 		container.appendChild(label);
-		toggleLabelStyle(label.querySelector('input'));
+		// Inicijalno nisu cekirani
+		toggleLabel(label.querySelector('input'));
 	}
 }
 
@@ -158,7 +167,15 @@ function renderShopUI(list) {
 	if (!container) return;
 	container.innerHTML = '';
 	const cats = {};
-	Object.keys(list).forEach((k) => {
+	const keys = Object.keys(list);
+
+	if (keys.length === 0) {
+		container.innerHTML =
+			'<div class="text-center py-10"><p class="text-gray-400 font-medium italic">Izaberi korisnika i bar jedan dan da vidiš listu za nabavku.</p></div>';
+		return;
+	}
+
+	keys.forEach((k) => {
 		const item = list[k];
 		if (!cats[item.cat]) cats[item.cat] = [];
 		cats[item.cat].push(item);
@@ -233,6 +250,16 @@ function renderShopUI(list) {
 
 function clearShoppingChecks() {
 	state.swappedIngredients = {};
+	// Vracamo korisnike na necekirano
+	document.getElementById('shopDj').checked = false;
+	document.getElementById('shopMi').checked = false;
+	toggleLabel(document.getElementById('shopDj'));
+	toggleLabel(document.getElementById('shopMi'));
+	// Vracamo dane na necekirano
+	document.querySelectorAll('input[name="shopDay"]').forEach((cb) => {
+		cb.checked = false;
+		toggleLabel(cb);
+	});
 	generateShoppingList();
 }
 
@@ -274,20 +301,24 @@ function formatListForSharing() {
 
 window.copyShoppingList = function () {
 	const text = formatListForSharing();
+	if (Object.keys(state.currentMasterList).length === 0) {
+		showToast('Lista je prazna!');
+		return;
+	}
 	const textArea = document.getElementById('hiddenClipboard');
 	textArea.value = text;
 	textArea.focus();
 	textArea.select();
-	try {
-		document.execCommand('copy');
-		showToast('Kopirano u clipboard!');
-	} catch (err) {
-		showToast('Greška pri kopiranju.');
-	}
+	document.execCommand('copy');
+	showToast('Kopirano u clipboard!');
 };
 
 window.shareOnWhatsApp = function () {
 	const text = encodeURIComponent(formatListForSharing());
+	if (Object.keys(state.currentMasterList).length === 0) {
+		showToast('Lista je prazna!');
+		return;
+	}
 	window.open('https://wa.me/?text=' + text, '_blank');
 };
 
@@ -477,7 +508,7 @@ window.showSubstitutions = function (name, amount) {
 		let group = null;
 		for (let i = 0; i < groups.length; i++) {
 			if (subData[groups[i]].items.some((it) => ln.indexOf(it) !== -1)) {
-				group = subData[groups[j]];
+				group = subData[groups[i]];
 				break;
 			}
 		}
